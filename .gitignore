@@ -1,0 +1,7 @@
+## Ignore build files
+build/
+devel/
+
+CMakeLists.txt.*
+*~
+*.tar.gz
