@@ -80,7 +80,7 @@ nubot::World_Model::publish(const ros::TimerEvent &)
              world_model_info_.robotinfo[i].isvalid = false;    //如果太长时间没有受到信息更新，则判断下场，避免程序突然挂掉后还显示
     }
 
- /*   /** 发布障碍物的信息(未测试)
+    /** 发布障碍物的信息(未测试)*/
     world_model_info_.obstacleinfo.pos.clear();
     world_model_info_.obstacleinfo.pos.resize(MAX_OBSNUMBER_CONST);
     for(std::size_t i = 0 ; i< OUR_TEAM ; i++)
@@ -92,7 +92,7 @@ nubot::World_Model::publish(const ros::TimerEvent &)
                 world_model_info_.obstacleinfo.pos[j].y=teammatesinfo_[i].obs_info_[j].getLocation().y_;
             }
             break;
-        }*/
+        }
 
     /** 发布球的信息 */
     world_model_info_.ballinfo.clear();

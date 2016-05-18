@@ -38,6 +38,7 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     for(int i=0;i<OUR_TEAM;i++)
         robot_img_[i]=robot_img_[i].scaled(30,30);
     ball_img_=ball_img_.scaled(20,20);
+    obs_img_=obs_img_.scaled(30,30);
 
     //一系列的标志初始化
     isObs_display_=false;
@@ -115,15 +116,17 @@ void Dialog::paintEvent(QPaintEvent *event)
         }
     }
 
-    if(isObs_display_&&robot2coach_info_->Obstacles_.size())
-        for(int i=0;i<robot2coach_info_->Obstacles_.size();i++)
-            painter.drawImage(robot2coach_info_->Obstacles_[i].x_*WIDTH+340,
-                              -robot2coach_info_->Obstacles_[i].y_*HEIGHT+223.5,obs_img_);
-
-    else if(isOpp_display_&&robot2coach_info_->Opponents_.size())
-        for(int i=0;i<robot2coach_info_->Opponents_.size();i++)
-            painter.drawImage(robot2coach_info_->Opponents_[i].x_*WIDTH+340,
-                              -robot2coach_info_->Opponents_[i].y_*HEIGHT+223.5,obs_img_);
+    for(int i=0;i<OUR_TEAM;i++)
+    {
+        if(robot2coach_info_->RobotInfo_[i].isValid())
+        {
+            if(isObs_display_&&robot2coach_info_->Obstacles_.size())
+                for(int i=0;i<robot2coach_info_->Obstacles_.size();i++)
+                    painter.drawImage(robot2coach_info_->Obstacles_[i].x_*WIDTH+340,
+                                      -robot2coach_info_->Obstacles_[i].y_*HEIGHT+223.5,obs_img_);
+            break;
+        }
+    }
 
     painter.end();
     ui->display->setPixmap(QPixmap::fromImage(field_img));                         //显示到display
@@ -328,12 +331,18 @@ void Dialog::on_cancel_clicked()
 //障碍物显示控制
 void Dialog::on_opponents_clicked()
 {
-    isOpp_display_=true;
+    if(!isOpp_display_)
+        isOpp_display_=true;
+    else if(isOpp_display_)
+        isOpp_display_=false;
 }
 
 void Dialog::on_obstacles_clicked()
 {
-    isObs_display_=true;
+    if(!isObs_display_)
+        isObs_display_=true;
+    else if(isObs_display_)
+        isObs_display_=false;
 }
 
 //队伍选择
@@ -356,8 +365,8 @@ void Dialog::on_connectRefe_clicked()
 {
     if(!isConnect_RefBox_)
     {
-        QString IP="172.16.1.2";
-        quint16 prot=30000;
+        QString IP="173.17.1.2";
+        quint16 prot=28097;
         tcpSocket_->abort();
         tcpSocket_->connectToHost(IP,prot);
 
@@ -501,14 +510,25 @@ int Dialog::ballPos_fuse()
 void Dialog::RefBox_Info()
 {
     char chafinal=json_parse_->chafinal_;
-    score_cyan_=json_parse_->score_cyan_;
-    score_magenta_=json_parse_->score_magenta_;
+   // qDebug()<<chafinal;
+   // score_cyan_=json_parse_->score_cyan_;
+   // score_magenta_=json_parse_->score_magenta_;
     switch (chafinal)
     {
     case COMM_START:
-        coach2robot_info_->MatchType=coach2robot_info_->MatchMode;
+       // coach2robot_info_->MatchType=coach2robot_info_->MatchMode;
         coach2robot_info_->MatchMode=STARTROBOT;
         ui->currentState->setText("START ROBOT");
+        break;
+    case COMM_FIRST_HALF:
+//        coach2robot_info_->MatchType=coach2robot_info_->MatchMode;
+        coach2robot_info_->MatchMode=STARTROBOT;
+        ui->currentState->setText("FIRST HALF");
+        break;
+    case COMM_SECOND_HALF:
+      //  coach2robot_info_->MatchType=coach2robot_info_->MatchMode;
+        coach2robot_info_->MatchMode=STARTROBOT;
+        ui->currentState->setText("SECOND HALF");
         break;
      case COMM_STOP:
         coach2robot_info_->MatchMode=STOPROBOT;
@@ -522,57 +542,68 @@ void Dialog::RefBox_Info()
         ui->currentState->setText("READY");
         break;
      case COMM_DROPPED_BALL:
+        coach2robot_info_->MatchType=DROPBALL;
         coach2robot_info_->MatchMode=DROPBALL;
         ui->currentState->setText("DROPBALL");
         break;
-/*     case COMM_GOAL_MAGENTA:
+     case COMM_GOAL_MAGENTA:
         score_magenta_++;
+        //coach2robot_info_->MatchMode=STOPROBOT;
         ui->Score0->display(score_magenta_);
         break;
-    case COMM_GOAL_CYAN:
+     case COMM_GOAL_CYAN:
         score_cyan_++;
+        //coach2robot_info_->MatchMode=STOPROBOT;
         ui->Score1->display(score_cyan_);
         break;
-    case COMM_SUBGOAL_MAGENTA:
+     case COMM_SUBGOAL_MAGENTA:
         score_magenta_--;
+        //coach2robot_info_->MatchMode=STOPROBOT;
         ui->Score0->display(score_magenta_);
         break;
-    case COMM_SUBGOAL_CYAN:
+     case COMM_SUBGOAL_CYAN:
         score_cyan_--;
+        //coach2robot_info_->MatchMode=STOPROBOT;
         ui->Score1->display(score_cyan_);
-        break;*/
-    case COMM_KICKOFF_MAGENTA:
+        break;
+     case COMM_KICKOFF_MAGENTA:
         if(teamflag_)
         {
+            coach2robot_info_->MatchType=OPP_KICKOFF;
             coach2robot_info_->MatchMode=OPP_KICKOFF;
             ui->currentState->setText("OPP KICKOFF");
         }
         else
         {
+            coach2robot_info_->MatchType=OUR_KICKOFF;
             coach2robot_info_->MatchMode=OUR_KICKOFF;
             ui->currentState->setText("OUR KICKOFF");
         }
         break;
-    case COMM_KICKOFF_CYAN:
+     case COMM_KICKOFF_CYAN:
         if(teamflag_)
         {
+            coach2robot_info_->MatchType=OUR_KICKOFF;
             coach2robot_info_->MatchMode=OUR_KICKOFF;
             ui->currentState->setText("OUR KICKOFF");
         }
         else
         {
+            coach2robot_info_->MatchType=OPP_KICKOFF;
             coach2robot_info_->MatchMode=OPP_KICKOFF;
             ui->currentState->setText("OPP KICKOFF");
         }
         break;
-    case COMM_FREEKICK_MAGENTA:
+     case COMM_FREEKICK_MAGENTA:
         if(teamflag_)
         {
+            coach2robot_info_->MatchType=OPP_FREEKICK;
             coach2robot_info_->MatchMode=OPP_FREEKICK;
             ui->currentState->setText("OPP FREEKICK");
         }
         else
         {
+            coach2robot_info_->MatchType=OUR_FREEKICK;
             coach2robot_info_->MatchMode=OUR_FREEKICK;
             ui->currentState->setText("OUR FREEKICK");
         }
@@ -580,11 +611,13 @@ void Dialog::RefBox_Info()
     case COMM_FREEKICK_CYAN:
         if(teamflag_)
         {
+            coach2robot_info_->MatchType=OUR_FREEKICK;
             coach2robot_info_->MatchMode=OUR_FREEKICK;
             ui->currentState->setText("OUR FREEKICK");
         }
         else
         {
+            coach2robot_info_->MatchType=OPP_FREEKICK;
             coach2robot_info_->MatchMode=OPP_FREEKICK;
             ui->currentState->setText("OPP FREEKICK");
         }
@@ -592,11 +625,13 @@ void Dialog::RefBox_Info()
     case COMM_GOALKICK_MAGENTA:
         if(teamflag_)
         {
-            coach2robot_info_->MatchMode=OPP_GOALKICK;
+            coach2robot_info_->MatchType = OPP_GOALKICK;
+            coach2robot_info_->MatchMode = OPP_GOALKICK;
             ui->currentState->setText("OPP GOALKICK");
         }
         else
         {
+            coach2robot_info_->MatchType=OUR_GOALKICK;
             coach2robot_info_->MatchMode=OUR_GOALKICK;
             ui->currentState->setText("OUR GOALKICK");
         }
@@ -604,11 +639,13 @@ void Dialog::RefBox_Info()
     case COMM_GOALKICK_CYAN:
         if(teamflag_)
         {
+            coach2robot_info_->MatchType=OUR_GOALKICK;
             coach2robot_info_->MatchMode=OUR_GOALKICK;
             ui->currentState->setText("OUR GOALKICK");
         }
         else
         {
+            coach2robot_info_->MatchType=OPP_GOALKICK;
             coach2robot_info_->MatchMode=OPP_GOALKICK;
             ui->currentState->setText("OPP GOALKICK");
         }
@@ -616,11 +653,13 @@ void Dialog::RefBox_Info()
     case COMM_THROWIN_MAGENTA:
         if(teamflag_)
         {
+            coach2robot_info_->MatchType=OPP_THROWIN;
             coach2robot_info_->MatchMode=OPP_THROWIN;
             ui->currentState->setText("OPP THROWIN");
         }
         else
         {
+            coach2robot_info_->MatchType=OUR_THROWIN;
             coach2robot_info_->MatchMode=OUR_THROWIN;
             ui->currentState->setText("OUR THROWIN");
         }
@@ -628,11 +667,13 @@ void Dialog::RefBox_Info()
     case COMM_THROWIN_CYAN:
         if(teamflag_)
         {
+            coach2robot_info_->MatchType=OUR_THROWIN;
             coach2robot_info_->MatchMode=OUR_THROWIN;
             ui->currentState->setText("OUR THROWIN");
         }
         else
         {
+            coach2robot_info_->MatchType=OPP_THROWIN;
             coach2robot_info_->MatchMode=OPP_THROWIN;
             ui->currentState->setText("OPP THROWIN");
         }
@@ -640,11 +681,13 @@ void Dialog::RefBox_Info()
     case COMM_CORNER_MAGENTA:
         if(teamflag_)
         {
+            coach2robot_info_->MatchType=OPP_CORNERKICK;
             coach2robot_info_->MatchMode=OPP_CORNERKICK;
             ui->currentState->setText("OPP CORNER");
         }
         else
         {
+            coach2robot_info_->MatchType=OUR_CORNERKICK;
             coach2robot_info_->MatchMode=OUR_CORNERKICK;
             ui->currentState->setText("OUR CORNER");
         }
@@ -652,11 +695,13 @@ void Dialog::RefBox_Info()
     case COMM_CORNER_CYAN:
         if(teamflag_)
         {
+            coach2robot_info_->MatchType=OUR_CORNERKICK;
             coach2robot_info_->MatchMode=OUR_CORNERKICK;
             ui->currentState->setText("OUR CORNER");
         }
         else
         {
+            coach2robot_info_->MatchType=OPP_CORNERKICK;
             coach2robot_info_->MatchMode=OPP_CORNERKICK;
             ui->currentState->setText("OPP CORNER");
         }
@@ -664,11 +709,13 @@ void Dialog::RefBox_Info()
     case COMM_PENALTY_MAGENTA:
         if(teamflag_)
         {
+            coach2robot_info_->MatchType=OPP_PENALTY;
             coach2robot_info_->MatchMode=OPP_PENALTY;
             ui->currentState->setText("OPP PENALTY");
         }
         else
         {
+            coach2robot_info_->MatchType=OUR_PENALTY;
             coach2robot_info_->MatchMode=OUR_PENALTY;
             ui->currentState->setText("OUR PENALTY");
         }
@@ -676,11 +723,13 @@ void Dialog::RefBox_Info()
     case COMM_PENALTY_CYAN:
         if(teamflag_)
         {
+            coach2robot_info_->MatchType=OUR_PENALTY;
             coach2robot_info_->MatchMode=OUR_PENALTY;
             ui->currentState->setText("OUR PENALTY");
         }
         else
         {
+            coach2robot_info_->MatchType=OPP_PENALTY;
             coach2robot_info_->MatchMode=OPP_PENALTY;
             ui->currentState->setText("OPP PENALTY");
         }
@@ -695,17 +744,14 @@ void Dialog::RefBox_Info()
         coach2robot_info_->MatchMode=STOPROBOT;
         ui->currentState->setText("END_PART");
         break;
-    case COMM_SECOND_HALF:
-        ui->currentState->setText("GOOD_GAME");
-        break;
     case COMM_END_GAME:
         ui->currentState->setText("GOOD_GAME");
         break;
     default:
         break;
     }
-    ui->Score0->display(score_magenta_);
-    ui->Score1->display(score_cyan_);
+   // ui->Score0->display(score_magenta_);
+   // ui->Score1->display(score_cyan_);
 }
 
 //连接裁判盒后，coach不能主动发布命令
@@ -757,20 +803,29 @@ void Dialog::OnReceive_()
 
     while (socket->bytesAvailable() > 0)
     {
+        buffer->clear();
         buffer->append(socket->readAll());
-
-        if(buffer->contains('\0'))
+        for(int i = 0 ; i < buffer->size() ;i++)
+        {
+            json_parse_->chafinal_ = buffer->data()[i];
+            RefBox_Info();
+            ui->text_disply->setStyleSheet("color:rgb(255,0,0);");
+            qDebug()<< json_parse_->chafinal_<<buffer->size();
+        }
+     /*   if(1)//buffer->contains('\0'))
         {
             qint32 size = buffer->indexOf('\0');
             QByteArray data = buffer->mid(0, size);
+            qDebug()<<data;
+
             buffer->remove(0, size + 1);
             if(json_parse_->parseJSON_(data))
             {
                 RefBox_Info();
                 ui->text_disply->setStyleSheet("color:rgb(255,0,0);");
-                //qDebug()<<data;
+                qDebug()<<data;
             }
-        }
+        }*/
     }
 }
 
