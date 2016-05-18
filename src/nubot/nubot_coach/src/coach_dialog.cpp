@@ -6,7 +6,7 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     robot2coach_info_= & robot2coach;                                 //将指针指向值空间
     coach2robot_info_= & coach2robot;
     json_parse_=new nubot::JSONparse;                                 //用于解析json文件
-    coach2refebox_=new nubot::Coach2refbox;                      //生成上传的json文件
+    coach2refebox_=new nubot::Coach2refbox;                           //生成上传的json文件
 
     QTimer *timer=new QTimer(this);
     tcpSocket_=new QTcpSocket(this);
@@ -26,7 +26,7 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
 
     this->setFixedSize(1100,700);                                                //固定窗口大小
 
-    field_img_init_.load("../../../src/nubot/nubot_coach/source/field.bmp");     //载入场地图像
+    field_img_init_.load("../../../src/nubot/nubot_coach/source/field.png");     //载入场地图像
     robot_img_[0].load("../../../src/nubot/nubot_coach/source/NUM1.png");        //载入机器人图像
     robot_img_[1].load("../../../src/nubot/nubot_coach/source/NUM2.png");
     robot_img_[2].load("../../../src/nubot/nubot_coach/source/NUM3.png");
@@ -48,8 +48,10 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     teamflag_=0;
     score_cyan_=0;
     score_magenta_=0;
+    groundflag_=1;
 
-    ui->magenta->setStyleSheet("background-color:rgb(245, 12, 198);border:2px groove gray;border-radius:10px;padding:2px 4px;");
+    //ui->change_ground->setStyleSheet("border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)");
+    //ui->magenta->setStyleSheet("background-color:rgb(245, 12, 198);border:2px groove gray;border-radius:10px;padding:2px 4px;");
     ui->currentState->setText("STOP ROBOT");                                  //显示当前机器人状态
 }
 
@@ -77,7 +79,7 @@ void Dialog::paintEvent(QPaintEvent *event)
                                   -robot2coach_info_->RobotInfo_[i].getLocation().y_*HEIGHT+233.5);   //设置图像中心为旋转的中心
                 painter.rotate(-robot2coach_info_->RobotInfo_[i].getHead().degree());     //旋转，单位度
                 //painter.setRenderHint(QPainter::Antialiasing);                          //抗锯齿，貌似没啥用
-                painter.drawImage(-15,-15,robot_img_[i]);                               //图像大小是30x30，所以要移动15到图像中心
+                painter.drawImage(-15,-15,robot_img_[i]);                                 //图像大小是30x30，所以要移动15到图像中心
                 painter.rotate(robot2coach_info_->RobotInfo_[i].getHead().degree());
                 painter.translate(-robot2coach_info_->RobotInfo_[i].getLocation().x_*WIDTH-350,
                                   robot2coach_info_->RobotInfo_[i].getLocation().y_*HEIGHT-233.5);           //还原图像中心
@@ -116,19 +118,26 @@ void Dialog::paintEvent(QPaintEvent *event)
         }
     }
 
-    for(int i=0;i<OUR_TEAM;i++)
-    {
-        if(robot2coach_info_->RobotInfo_[i].isValid())
+    if(isObs_display_)
+        for(int i=0;i<OUR_TEAM;i++)
         {
-            if(isObs_display_&&robot2coach_info_->Obstacles_.size())
-                for(int i=0;i<robot2coach_info_->Obstacles_.size();i++)
-                    painter.drawImage(robot2coach_info_->Obstacles_[i].x_*WIDTH+340,
-                                      -robot2coach_info_->Obstacles_[i].y_*HEIGHT+223.5,obs_img_);
-            break;
+            if(robot2coach_info_->RobotInfo_[i].isValid())
+            {
+                if(robot2coach_info_->Obstacles_.size())
+                    for(int i=0;i<robot2coach_info_->Obstacles_.size();i++)
+                        painter.drawImage(robot2coach_info_->Obstacles_[i].x_*WIDTH+340,
+                                          -robot2coach_info_->Obstacles_[i].y_*HEIGHT+223.5,obs_img_);
+                break;
+            }
         }
-    }
 
     painter.end();
+    if(groundflag_==-1)                                                //为了可视化的方便，调换场地方向
+    {
+        QMatrix matrix;
+        matrix.rotate(180);
+        field_img = field_img.transformed(matrix);
+    }
     ui->display->setPixmap(QPixmap::fromImage(field_img));                         //显示到display
     //ui->display->resize(QSize(field_img_init_.width(),field_img_init_.height()));          //重置lab大小
 }
@@ -144,8 +153,9 @@ void Dialog::keyPressEvent(QKeyEvent *event)               //保证安全，任�
 
 void Dialog::closeEvent(QCloseEvent *event)                //结束时关闭Ros进程
 {
+    //system("rosnode kill /world_model_node");
+    //system("rosnode kill /rosout");
     ros::shutdown();
-    //system("^C");
 }
 
 void Dialog::timerUpdate()
@@ -175,6 +185,7 @@ void Dialog::timerUpdate()
         else
             count1++;
     }
+    //qDebug()<<groundflag_<<" "<<teamflag_;
 }
 
 //显示的选择
@@ -400,6 +411,20 @@ void Dialog::on_upload_clicked()
         ui->upload->setText("UPLOAD");
         isUpload_worldmodel_=false;
         qDebug()<<"Stop_upload";
+    }
+}
+
+void Dialog::on_change_ground_clicked()
+{
+    if(groundflag_==1)
+    {
+        ui->change_ground->setStyleSheet("border-image: url(../../../src/nubot/nubot_coach/source/right2left.png)");
+        groundflag_=-1;
+    }
+    else if (groundflag_==-1)
+    {
+        ui->change_ground->setStyleSheet("border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)");
+        groundflag_=1;
     }
 }
 

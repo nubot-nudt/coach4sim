@@ -11,7 +11,7 @@
 #include <nubot_common/WorldModelInfo.h>
 #include <nubot_common/CoachInfo.h>
 #include "nubot/rtdb/rtdb_api.h"
-#include "nubot/rtdb/rtdb_user.h""
+#include "nubot/rtdb/rtdb_user.h"
 #include "ros/ros.h"
 #include <semaphore.h>
 #include <fstream>
@@ -32,6 +32,7 @@ public:
 #else
     std::vector<Teammatesinfo> teammatesinfo_;
 #endif
+    Obstacles obstacles_;
     nubot_common::WorldModelInfo world_model_info_;
     MessageFromCoach coach_info_;
 

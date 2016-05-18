@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     QString myDir=QCoreApplication::applicationDirPath();
     QDir::setCurrent(myDir);                                                     //改变当前目录到程序目录
-    a.setWindowIcon(QIcon("../../../src/nubot/nubot_coach/source/app.ico"));     //改变应用程序图标
+    a.setWindowIcon(QIcon("../../../src/nubot/nubot_coach/source/app.png"));     //改变应用程序图标
 
     //system("sudo -S busybox route add -net 230.0.0.1 netmask 255.255.255.255 dev eth0"); //把230.0.0.1加入路由表
     /** 初始化ROS */

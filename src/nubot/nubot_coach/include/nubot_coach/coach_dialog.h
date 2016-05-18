@@ -75,7 +75,8 @@ private:
     bool isOpp_display_;
     bool isConnect_RefBox_;
     bool isUpload_worldmodel_;                        //是否上传worldmodel
-    bool teamflag_;                                   //队伍标志位　　０ MAGENTA(默认),1 CYAN
+    bool teamflag_;                                   //队伍标志位　　0 MAGENTA(默认),1 CYAN
+    int  groundflag_;                                 //场地方向标志  1 left2right（默认），-1 right2left
 
     QString infoShow_[OUR_TEAM];                             //用于显示机器人策略信息
     QString allShow_[OUR_TEAM];                             //用于显示所有机器人和球的位置和速度信息
@@ -123,6 +124,8 @@ private slots:
 
     void on_connectRefe_clicked();
     void on_upload_clicked();
+
+    void on_change_ground_clicked();
 };
 
 

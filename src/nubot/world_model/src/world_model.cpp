@@ -80,7 +80,22 @@ nubot::World_Model::publish(const ros::TimerEvent &)
              world_model_info_.robotinfo[i].isvalid = false;    //如果太长时间没有受到信息更新，则判断下场，避免程序突然挂掉后还显示
     }
 
-    /** 发布障碍物的信息(未测试)*/
+    /** 将通信得到的障碍物信息写入 */
+    std::vector<ObstacleObject> obs_info;
+    for(std::size_t i = 0 ; i< OUR_TEAM ; i++)
+    {
+        if(world_model_info_.robotinfo[i].isvalid)
+        {
+            for(int j=0; j<MAX_OBSNUMBER_CONST;j++)
+                if(teammatesinfo_[i].obs_info_[j].getPolarLocation().radius_!=10000)
+                    obs_info.push_back(teammatesinfo_[i].obs_info_[j]);
+            obstacles_.setOmniObstacles(obs_info,i+1);
+        }
+        else
+            obstacles_.clearOmniObstacles(i+1);
+    }
+
+    /** 发布障碍物的信息*/
     world_model_info_.obstacleinfo.pos.clear();
     world_model_info_.obstacleinfo.pos.resize(MAX_OBSNUMBER_CONST);
     for(std::size_t i = 0 ; i< OUR_TEAM ; i++)
