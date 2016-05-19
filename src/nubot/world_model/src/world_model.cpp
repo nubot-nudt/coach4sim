@@ -80,10 +80,10 @@ nubot::World_Model::publish(const ros::TimerEvent &)
              world_model_info_.robotinfo[i].isvalid = false;    //如果太长时间没有受到信息更新，则判断下场，避免程序突然挂掉后还显示
     }
 
-    /** 将通信得到的障碍物信息写入 */
-    std::vector<ObstacleObject> obs_info;
+    /** 将通信得到的障碍物信息写入并融合 */
     for(std::size_t i = 0 ; i< OUR_TEAM ; i++)
     {
+        std::vector<ObstacleObject> obs_info;
         if(world_model_info_.robotinfo[i].isvalid)
         {
             for(int j=0; j<MAX_OBSNUMBER_CONST;j++)
@@ -93,21 +93,35 @@ nubot::World_Model::publish(const ros::TimerEvent &)
         }
         else
             obstacles_.clearOmniObstacles(i+1);
+        obstacles_.setRobotInfo(teammatesinfo_[i].robot_info_.getLocation(),teammatesinfo_[i].robot_info_.isValid(),i+1);
     }
+    obstacles_.update();
 
     /** 发布障碍物的信息*/
-    world_model_info_.obstacleinfo.pos.clear();
-    world_model_info_.obstacleinfo.pos.resize(MAX_OBSNUMBER_CONST);
+    /** 单个机器人看到的障碍物，填充到obstacleinfo中 */
     for(std::size_t i = 0 ; i< OUR_TEAM ; i++)
-        if(teammatesinfo_[i].robot_info_.isValid())         //选择第一个上场机器人看到的障碍物显示
-        {
+    {
+        world_model_info_.obstacleinfo[i].pos.clear();
+        world_model_info_.obstacleinfo[i].pos.resize(MAX_OBSNUMBER_CONST);
+        if(teammatesinfo_[i].robot_info_.isValid())
             for(int j=0; j<MAX_OBSNUMBER_CONST; j++)
             {
-                world_model_info_.obstacleinfo.pos[j].x=teammatesinfo_[i].obs_info_[j].getLocation().x_;
-                world_model_info_.obstacleinfo.pos[j].y=teammatesinfo_[i].obs_info_[j].getLocation().y_;
+                world_model_info_.obstacleinfo[i].pos[j].x=teammatesinfo_[i].obs_info_[j].getLocation().x_;
+                world_model_info_.obstacleinfo[i].pos[j].y=teammatesinfo_[i].obs_info_[j].getLocation().y_;
             }
-            break;
-        }
+    }
+    /** 多个机器人融合后的障碍物，填充到oppinfo中 */
+    std::vector< DPoint > opptracker;
+    obstacles_.getFuseObsTracker(opptracker);
+    world_model_info_.oppinfo.pos.clear();
+    world_model_info_.oppinfo.pos.resize(opptracker.size());
+    for(std::size_t i = 0; i< opptracker.size() ; i++)
+    {
+        nubot_common::Point2d point;
+        point.x=opptracker[i].x_;
+        point.y=opptracker[i].y_;
+        world_model_info_.oppinfo.pos[i]= point;
+    }
 
     /** 发布球的信息 */
     world_model_info_.ballinfo.clear();

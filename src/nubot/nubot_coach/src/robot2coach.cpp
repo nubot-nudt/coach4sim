@@ -34,15 +34,20 @@ void Robot2coach::update_info(const nubot_common::WorldModelInfo & _world_msg)
         robot2coach_info.RobotInfo_[i].setCurrentRole(_world_msg.robotinfo[i].current_role);
         robot2coach_info.RobotInfo_[i].setCurrentAction(_world_msg.robotinfo[i].current_action);
         robot2coach_info.RobotInfo_[i].setTarget(DPoint(_world_msg.robotinfo[i].target.x,_world_msg.robotinfo[i].target.y));
-
     }
-    //更新障碍物信息
-    robot2coach_info.Obstacles_.clear();
-    for(nubot_common::Point2d point : _world_msg.obstacleinfo.pos )
-        robot2coach_info.Obstacles_.push_back(DPoint(point.x,point.y));
+
+    //更新单个机器人障碍物信息
+    for(int i = 0 ; i < OUR_TEAM ; i++)
+    {
+        robot2coach_info.Obstacles_[i].clear();
+        for(nubot_common::Point2d point : _world_msg.obstacleinfo[i].pos )
+            robot2coach_info.Obstacles_[i].push_back(DPoint(point.x,point.y));
+    }
+    //更新融合后障碍物信息
     robot2coach_info.Opponents_.clear();
     for(nubot_common::Point2d point : _world_msg.oppinfo.pos )
         robot2coach_info.Opponents_.push_back(DPoint(point.x,point.y));
+
     //更新足球物信息
     for(int i = 0 ; i < OUR_TEAM ; i++)
     {

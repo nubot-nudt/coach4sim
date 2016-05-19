@@ -71,6 +71,7 @@ void Dialog::paintEvent(QPaintEvent *event)
     //根据选择画图
     if(display_choice_==0)
     {
+        //绘制机器人
         for(int i=0;i<OUR_TEAM;i++)
         {
             if(robot2coach_info_->RobotInfo_[i].isValid())
@@ -86,16 +87,32 @@ void Dialog::paintEvent(QPaintEvent *event)
             }
         }
 
+        //绘制球
         int num=ballPos_fuse();
         if(num)
             painter.drawImage(robot2coach_info_->BallInfo_[num-1].getGlobalLocation().x_*WIDTH+340,
                               -robot2coach_info_->BallInfo_[num-1].getGlobalLocation().y_*HEIGHT+223.5,
                               ball_img_);
+
+        //绘制融合后的障碍物
+        if(isObs_display_)
+            for(int i=0;i<OUR_TEAM;i++)
+            {
+                if(robot2coach_info_->RobotInfo_[i].isValid())     //存在任意一个机器人在场
+                {
+                    if(robot2coach_info_->Opponents_.size())
+                        for(int i=0;i<robot2coach_info_->Opponents_.size();i++)
+                            painter.drawImage(robot2coach_info_->Opponents_[i].x_*WIDTH+340,
+                                              -robot2coach_info_->Opponents_[i].y_*HEIGHT+223.5,obs_img_);
+                    break;
+                }
+            }
     }
     else
     {
         if(robot2coach_info_->RobotInfo_[display_choice_-1].isValid())
         {
+            //绘制机器人
             painter.translate(robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().x_*WIDTH+350,
                               -robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().y_*HEIGHT+233.5);//设置图像中心为旋转的中心
             painter.rotate(-robot2coach_info_->RobotInfo_[display_choice_-1].getHead().degree());      //旋转，单位度
@@ -105,31 +122,30 @@ void Dialog::paintEvent(QPaintEvent *event)
             painter.translate(-robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().x_*WIDTH-350,
                               robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().y_*HEIGHT-233.5);            //还原图像中心
 
+            //绘制球
             if(robot2coach_info_->BallInfo_[display_choice_-1].isLocationKnown())
                 painter.drawImage(robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+340,
                                   -robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().y_*HEIGHT+223.5,
                                   ball_img_);
-            //当前机器人识别的球速
+
+            //绘制当前机器人识别的球速
             painter.setPen(QPen(Qt::red, 5));
             painter.drawLine(robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+350,
                              -robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().y_*HEIGHT+233.5,
                              robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+350+robot2coach_info_->BallInfo_[display_choice_-1].getVelocity().x_,
                              -robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().y_*HEIGHT+233.5-robot2coach_info_->BallInfo_[display_choice_-1].getVelocity().y_);
-        }
-    }
 
-    if(isObs_display_)
-        for(int i=0;i<OUR_TEAM;i++)
-        {
-            if(robot2coach_info_->RobotInfo_[i].isValid())
+            //绘制当前机器人识别的障碍物
+            if(isObs_display_)
             {
-                if(robot2coach_info_->Obstacles_.size())
-                    for(int i=0;i<robot2coach_info_->Obstacles_.size();i++)
-                        painter.drawImage(robot2coach_info_->Obstacles_[i].x_*WIDTH+340,
-                                          -robot2coach_info_->Obstacles_[i].y_*HEIGHT+223.5,obs_img_);
-                break;
+                vector<nubot::DPoint> _obstacles=robot2coach_info_->Obstacles_[display_choice_-1];
+                if(_obstacles.size())
+                    for(int j=0;j<_obstacles.size();j++)
+                        painter.drawImage(_obstacles[j].x_*WIDTH+340,
+                                          _obstacles[j].y_*HEIGHT+223.5,obs_img_);
             }
         }
+    }
 
     painter.end();
     if(groundflag_==-1)                                                //为了可视化的方便，调换场地方向

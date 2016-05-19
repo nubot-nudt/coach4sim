@@ -60,9 +60,16 @@ void Coach2refbox::packWorldmodel_(Robot2coach_info *robot2coach_info_)
     }
 
     //Obstacles setters
-    for(int i=0;i<robot2coach_info_->Obstacles_.size();i++)
+    for(int i=0;i<OUR_TEAM;i++)
     {
-        nubotpacket_.addObstacle(robot2coach_info_->Obstacles_[i],DPoint(0,0));
+        if(robot2coach_info_->RobotInfo_[i].isValid())
+        {
+            vector<DPoint> _obstacles=robot2coach_info_->Obstacles_[i];
+            for(int i=0;i<_obstacles.size();i++)
+            {
+                nubotpacket_.addObstacle(_obstacles[i],DPoint(0,0));
+            }
+        }
     }
 
     //ageMs setters
