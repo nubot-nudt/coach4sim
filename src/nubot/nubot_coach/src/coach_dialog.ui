@@ -651,16 +651,6 @@ padding:0.1px;
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QCheckBox" name="opponents">
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="text">
-       <string>Opponents</string>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QCheckBox" name="obstacles">
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>

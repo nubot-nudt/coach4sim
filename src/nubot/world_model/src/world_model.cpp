@@ -27,6 +27,7 @@ nubot::World_Model::World_Model(int argc,char** argv,const char * name)
     teammatesinfo_.resize(OUR_TEAM); //开辟内存空间；
     /** 当前仅仅传输五个机器人信息*/
     world_model_info_.robotinfo.resize(OUR_TEAM);
+    world_model_info_.obstacleinfo.resize(OUR_TEAM);
     receive_coach_count_ = ros::Time::now();;
 }
 nubot::World_Model::~World_Model()
@@ -100,7 +101,7 @@ nubot::World_Model::publish(const ros::TimerEvent &)
     /** 发布障碍物的信息*/
     /** 单个机器人看到的障碍物，填充到obstacleinfo中 */
     for(std::size_t i = 0 ; i< OUR_TEAM ; i++)
-    {
+    {    
         world_model_info_.obstacleinfo[i].pos.clear();
         world_model_info_.obstacleinfo[i].pos.resize(MAX_OBSNUMBER_CONST);
         if(teammatesinfo_[i].robot_info_.isValid())

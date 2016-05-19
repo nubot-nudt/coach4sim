@@ -42,7 +42,6 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
 
     //一系列的标志初始化
     isObs_display_=false;
-    isOpp_display_=false;
     isConnect_RefBox_=false;
 
     teamflag_=0;
@@ -138,11 +137,9 @@ void Dialog::paintEvent(QPaintEvent *event)
             //绘制当前机器人识别的障碍物
             if(isObs_display_)
             {
-                vector<nubot::DPoint> _obstacles=robot2coach_info_->Obstacles_[display_choice_-1];
-                if(_obstacles.size())
-                    for(int j=0;j<_obstacles.size();j++)
-                        painter.drawImage(_obstacles[j].x_*WIDTH+340,
-                                          _obstacles[j].y_*HEIGHT+223.5,obs_img_);
+                for(int j=0;j<10;j++)
+                    painter.drawImage(robot2coach_info_->Obstacles_[display_choice_-1][j].x_*WIDTH+340,
+                                      -robot2coach_info_->Obstacles_[display_choice_-1][j].y_*HEIGHT+223.5,obs_img_);
             }
         }
     }
@@ -356,14 +353,6 @@ void Dialog::on_cancel_clicked()
 }
 
 //障碍物显示控制
-void Dialog::on_opponents_clicked()
-{
-    if(!isOpp_display_)
-        isOpp_display_=true;
-    else if(isOpp_display_)
-        isOpp_display_=false;
-}
-
 void Dialog::on_obstacles_clicked()
 {
     if(!isObs_display_)

@@ -4,7 +4,7 @@
 #include "nubot/core/core.hpp"
 
 namespace nubot {
-const int MAX_OBSNUMBER_CONST = 10;
+
 class ObstacleObject{
 
 public:

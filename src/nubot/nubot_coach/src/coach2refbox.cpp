@@ -64,10 +64,10 @@ void Coach2refbox::packWorldmodel_(Robot2coach_info *robot2coach_info_)
     {
         if(robot2coach_info_->RobotInfo_[i].isValid())
         {
-            vector<DPoint> _obstacles=robot2coach_info_->Obstacles_[i];
-            for(int i=0;i<_obstacles.size();i++)
+            for(int j=0;j<10;j++)
             {
-                nubotpacket_.addObstacle(_obstacles[i],DPoint(0,0));
+                DPoint _point = robot2coach_info_->Obstacles_[i][j];
+                nubotpacket_.addObstacle(_point,DPoint(0,0));
             }
         }
     }

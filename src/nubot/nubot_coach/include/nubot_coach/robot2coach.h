@@ -21,14 +21,15 @@ public:
     vector<Robot>      RobotInfo_;       //机器人的信息
     vector<BallObject> BallInfo_;        //球的信息
     vector<vector<DPoint>>     Obstacles_;       //单个机器人识别障碍物信息
+   //DPoint Obstacles_[OUR_TEAM][MAX_OBSNUMBER_CONST];
     vector<DPoint>     Opponents_;       //多个机器人障碍物融合信息
 
     Robot2coach_info()
     {
         RobotInfo_.resize(OUR_TEAM);
         BallInfo_.resize(OUR_TEAM);
-        Obstacles_.resize(OUR_TEAM);
-        Opponents_.reserve(25);
+        Obstacles_ = std::vector <std::vector<DPoint> > (OUR_TEAM,std::vector<DPoint>(MAX_OBSNUMBER_CONST));
+        Opponents_.reserve(MAX_OBSNUMBER_CONST *2);
     }
 };
 
@@ -47,6 +48,7 @@ public:
     void run();
     void update_info(const nubot_common::WorldModelInfo & _world_msg);
     void publish(const ros::TimerEvent &);
+    void operator ()();
     ~Robot2coach();
 };
 

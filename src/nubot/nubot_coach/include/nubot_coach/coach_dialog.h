@@ -72,7 +72,6 @@ private:
     int score_magenta_;
 
     bool isObs_display_;                              //判断是否显示障碍物以及对手
-    bool isOpp_display_;
     bool isConnect_RefBox_;
     bool isUpload_worldmodel_;                        //是否上传worldmodel
     bool teamflag_;                                   //队伍标志位　　0 MAGENTA(默认),1 CYAN
@@ -115,8 +114,6 @@ private slots:
     void on_goalkick_opp_clicked();
     void on_dropball_clicked();
     void on_cancel_clicked();
-
-    void on_opponents_clicked();
     void on_obstacles_clicked();
 
     void on_cyan_clicked();                         //队伍选择

@@ -23,6 +23,7 @@ const double ConstDribbleDisFirst  = 40;
 const double ConstDribbleDisSecond = 35;
 #endif
 //using namespace nubot;
+const int MAX_OBSNUMBER_CONST = 10;
 const int NOT_DATAUPDATE = 300; //数据没有更新的阈值，比如通信过程中时间大于300ms为更新数据，默认为失效
 const int OUR_TEAM = 5 ;        //自己机器人个数
 const int OPP_TEAM = 7 ;        //对方的机器人个数
