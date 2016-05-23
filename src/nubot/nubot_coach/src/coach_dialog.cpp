@@ -8,6 +8,8 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     json_parse_=new nubot::JSONparse;                                 //用于解析json文件
     coach2refebox_=new nubot::Coach2refbox;                           //生成上传的json文件
 
+    scene_=new QGraphicsScene();                                      //尝试采用新的绘图方法
+
     QTimer *timer=new QTimer(this);
     tcpSocket_=new QTcpSocket(this);
     QByteArray *buffer = new QByteArray();
@@ -22,9 +24,10 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     ui=new Ui::Dialog;
     ui->setupUi(this);
     ui->radioButton->setChecked(true);
+    ui->display->setScene(scene_);
     timer->start(30);                                                            //定时函数，每30ms
 
-    this->setFixedSize(1100,700);                                                //固定窗口大小
+    this->setFixedSize(1110,700);                                                //固定窗口大小
 
     field_img_init_.load("../../../src/nubot/nubot_coach/source/field.png");     //载入场地图像
     robot_img_[0].load("../../../src/nubot/nubot_coach/source/NUM1.png");        //载入机器人图像
@@ -39,6 +42,8 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
         robot_img_[i]=robot_img_[i].scaled(30,30);
     ball_img_=ball_img_.scaled(20,20);
     obs_img_=obs_img_.scaled(30,30);
+
+    scene_->addPixmap(QPixmap::fromImage(field_img_init_));
 
     //一系列的标志初始化
     isObs_display_=false;
@@ -60,7 +65,7 @@ Dialog::~Dialog()
 }
 
 //绘图函数
-void Dialog::paintEvent(QPaintEvent *event)
+/*void Dialog::paintEvent(QPaintEvent *event)
 {
     QPainter painter;
     QImage field_img;
@@ -153,6 +158,11 @@ void Dialog::paintEvent(QPaintEvent *event)
     }
     ui->display->setPixmap(QPixmap::fromImage(field_img));                         //显示到display
     //ui->display->resize(QSize(field_img_init_.width(),field_img_init_.height()));          //重置lab大小
+}*/
+
+void Dialog::paintEvent(QPaintEvent *event)
+{
+
 }
 
 void Dialog::keyPressEvent(QKeyEvent *event)               //保证安全，任何模式下空格都能发stop命令到机器人

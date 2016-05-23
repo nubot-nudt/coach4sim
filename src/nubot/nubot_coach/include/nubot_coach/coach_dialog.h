@@ -22,6 +22,8 @@
 #include <json_parse.h>
 #include <coach2refbox.h>
 #include <QMessageBox>
+#include <qgraphicsscene.h>
+#include <qgraphicsview.h>
 
 #define  WIDTH  700/1800                                                    //场地缩放单位长度
 #define  HEIGHT 467/1200
@@ -60,6 +62,7 @@ public:
     QImage robot_img_[OUR_TEAM];                  //机器人图像
     QImage ball_img_;                             //球图像
     QImage obs_img_;                              //障碍物图像
+    QGraphicsScene *scene_;
 
     QTcpSocket *tcpSocket_;
     QHash<QTcpSocket*, QByteArray*> buffers;
