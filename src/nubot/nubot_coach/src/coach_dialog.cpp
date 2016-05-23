@@ -8,6 +8,8 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     json_parse_=new nubot::JSONparse;                                 //用于解析json文件
     coach2refebox_=new nubot::Coach2refbox;                           //生成上传的json文件
 
+    scene_=new QGraphicsScene();                                      //尝试采用新的绘图方法
+
     QTimer *timer=new QTimer(this);
     tcpSocket_=new QTcpSocket(this);
     QByteArray *buffer = new QByteArray();
@@ -22,9 +24,10 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     ui=new Ui::Dialog;
     ui->setupUi(this);
     ui->radioButton->setChecked(true);
-    timer->start(50);                                                            //定时函数，每30ms
+    ui->display->setScene(scene_);
+    timer->start(30);                                                            //定时函数，每30ms
 
-    this->setFixedSize(1100,700);                                                //固定窗口大小
+    this->setFixedSize(1110,700);                                                //固定窗口大小
 
     field_img_init_.load("../../../src/nubot/nubot_coach/source/field.png");     //载入场地图像
     robot_img_[0].load("../../../src/nubot/nubot_coach/source/NUM1.png");        //载入机器人图像
@@ -40,6 +43,22 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     ball_img_=ball_img_.scaled(20,20);
     obs_img_=obs_img_.scaled(30,30);
 
+    scene_->addPixmap(field_img_init_);                    //载入球场
+    scene_->setSceneRect(0,0,700,467);                     //固定显示大小
+    ball_=scene_->addPixmap(ball_img_);                    //载入球
+    ball_->setPos(900,900);
+    for(int i=0;i<OUR_TEAM;i++)
+    {
+        robot_[i]=scene_->addPixmap(robot_img_[i]);        //载入机器人
+        robot_[i]->setPos(900,900);
+    }
+    for(int i=0;i<MAX_OBSNUMBER_CONST*2;i++)
+    {
+        obstacle_[i]=scene_->addPixmap(obs_img_);                 //载入障碍物
+        obstacle_[i]->setPos(900,900);                            //初始位置放到(900,900),不出现在视野里
+    }
+
+    velocity_=scene_->addLine(900,900,901,901,QPen(Qt::red, 5));  //初始化速度曲线位置
     //一系列的标志初始化
     isObs_display_=false;
     isConnect_RefBox_=false;
@@ -59,14 +78,10 @@ Dialog::~Dialog()
     delete ui;                                                                 //不能同时关闭ui线程和ros线程
 }
 
-//绘图函数
 void Dialog::paintEvent(QPaintEvent *event)
 {
-    QPainter painter;
-    field_img_=field_img_init_;
-    painter.begin(&field_img_);                                                     //设置绘图区域
-
     //根据选择画图
+    restItems_();
     if(display_choice_==0)
     {
         //绘制机器人
@@ -74,23 +89,18 @@ void Dialog::paintEvent(QPaintEvent *event)
         {
             if(robot2coach_info_->RobotInfo_[i].isValid())
             {
-                painter.translate(robot2coach_info_->RobotInfo_[i].getLocation().x_*WIDTH+350,
-                                  -robot2coach_info_->RobotInfo_[i].getLocation().y_*HEIGHT+233.5);   //设置图像中心为旋转的中心
-                painter.rotate(-robot2coach_info_->RobotInfo_[i].getHead().degree());     //旋转，单位度
-                //painter.setRenderHint(QPainter::Antialiasing);                          //抗锯齿，貌似没啥用
-                painter.drawPixmap(-15,-15,robot_img_[i]);                                 //图像大小是30x30，所以要移动15到图像中心
-                painter.rotate(robot2coach_info_->RobotInfo_[i].getHead().degree());
-                painter.translate(-robot2coach_info_->RobotInfo_[i].getLocation().x_*WIDTH-350,
-                                  robot2coach_info_->RobotInfo_[i].getLocation().y_*HEIGHT-233.5);           //还原图像中心
+                robot_[i]->setPos(groundflag_*robot2coach_info_->RobotInfo_[i].getLocation().x_*WIDTH+335,
+                                  -groundflag_*robot2coach_info_->RobotInfo_[i].getLocation().y_*HEIGHT+218.5);
+                robot_[i]->setTransformOriginPoint(15,15);
+                robot_[i]->setRotation((groundflag_-1)*90-robot2coach_info_->RobotInfo_[i].getHead().degree());
             }
         }
 
         //绘制球
         int num=ballPos_fuse();
         if(num)
-            painter.drawPixmap(robot2coach_info_->BallInfo_[num-1].getGlobalLocation().x_*WIDTH+340,
-                              -robot2coach_info_->BallInfo_[num-1].getGlobalLocation().y_*HEIGHT+223.5,
-                              ball_img_);
+            ball_->setPos(groundflag_*robot2coach_info_->BallInfo_[num-1].getGlobalLocation().x_*WIDTH+340,
+                          -groundflag_*robot2coach_info_->BallInfo_[num-1].getGlobalLocation().y_*HEIGHT+223.5);
 
         //绘制融合后的障碍物
         if(isObs_display_)
@@ -100,8 +110,8 @@ void Dialog::paintEvent(QPaintEvent *event)
                 {
                     if(robot2coach_info_->Opponents_.size())
                         for(int i=0;i<robot2coach_info_->Opponents_.size();i++)
-                            painter.drawPixmap(robot2coach_info_->Opponents_[i].x_*WIDTH+340,
-                                              -robot2coach_info_->Opponents_[i].y_*HEIGHT+223.5,obs_img_);
+                            obstacle_[i]->setPos(groundflag_*robot2coach_info_->Opponents_[i].x_*WIDTH+335,
+                                                 -groundflag_*robot2coach_info_->Opponents_[i].y_*HEIGHT+218.5);
                     break;
                 }
             }
@@ -111,47 +121,30 @@ void Dialog::paintEvent(QPaintEvent *event)
         if(robot2coach_info_->RobotInfo_[display_choice_-1].isValid())
         {
             //绘制机器人
-            painter.translate(robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().x_*WIDTH+350,
-                              -robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().y_*HEIGHT+233.5);//设置图像中心为旋转的中心
-            painter.rotate(-robot2coach_info_->RobotInfo_[display_choice_-1].getHead().degree());      //旋转，单位度
-            //painter.setRenderHint(QPainter::Antialiasing);
-            painter.drawPixmap(-15,-15,robot_img_[display_choice_-1]);
-            painter.rotate(robot2coach_info_->RobotInfo_[display_choice_-1].getHead().degree());
-            painter.translate(-robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().x_*WIDTH-350,
-                              robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().y_*HEIGHT-233.5);            //还原图像中心
+            robot_[display_choice_-1]->setPos(groundflag_*robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().x_*WIDTH+335,
+                                              -groundflag_*robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().y_*HEIGHT+218.5);
+            robot_[display_choice_-1]->setTransformOriginPoint(15,15);
+            robot_[display_choice_-1]->setRotation((groundflag_-1)*90-robot2coach_info_->RobotInfo_[display_choice_-1].getHead().degree());
 
             //绘制球
             if(robot2coach_info_->BallInfo_[display_choice_-1].isLocationKnown())
-                painter.drawPixmap(robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+340,
-                                  -robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().y_*HEIGHT+223.5,
-                                  ball_img_);
+            {
+                ball_->setPos(groundflag_*robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+340,
+                              -groundflag_*robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().y_*HEIGHT+223.5);
 
-            //绘制当前机器人识别的球速
-            painter.setPen(QPen(Qt::red, 5));
-            painter.drawLine(robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+350,
-                             -robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().y_*HEIGHT+233.5,
-                             robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+350+robot2coach_info_->BallInfo_[display_choice_-1].getVelocity().x_,
-                             -robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().y_*HEIGHT+233.5-robot2coach_info_->BallInfo_[display_choice_-1].getVelocity().y_);
-
+                //绘制当前机器人识别的球速
+                velocity_->setLine(groundflag_*robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+350,
+                                   -groundflag_*robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().y_*HEIGHT+233.5,
+                                   groundflag_*(robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+robot2coach_info_->BallInfo_[display_choice_-1].getVelocity().x_)+350,
+                                   -groundflag_*(robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().y_*HEIGHT+robot2coach_info_->BallInfo_[display_choice_-1].getVelocity().y_)+233.5);
+            }
             //绘制当前机器人识别的障碍物
             if(isObs_display_)
-            {
-                for(int j=0;j<10;j++)
-                    painter.drawPixmap(robot2coach_info_->Obstacles_[display_choice_-1][j].x_*WIDTH+340,
-                                      -robot2coach_info_->Obstacles_[display_choice_-1][j].y_*HEIGHT+223.5,obs_img_);
-            }
+                for(int j=0;j<robot2coach_info_->Obstacles_.size();j++)
+                    obstacle_[j]->setPos(groundflag_*robot2coach_info_->Obstacles_[display_choice_-1][j].x_*WIDTH+335,
+                                         -groundflag_*robot2coach_info_->Obstacles_[display_choice_-1][j].y_*HEIGHT+218.5);
         }
     }
-
-    painter.end();
-    if(groundflag_==-1)                                                //为了可视化的方便，调换场地方向
-    {
-        QMatrix matrix;
-        matrix.rotate(180);
-        field_img_ = field_img_.transformed(matrix);
-    }
-    ui->display->setPixmap(field_img_);                         //显示到display
-    //ui->display->resize(QSize(field_img_init_.width(),field_img_init_.height()));          //重置lab大小
 }
 
 void Dialog::keyPressEvent(QKeyEvent *event)               //保证安全，任何模式下空格都能发stop命令到机器人
@@ -876,4 +869,14 @@ void Dialog::buttonDelay_()              //每隔450ms按钮复位
     }
     else
         count++;
+}
+
+void Dialog::restItems_()
+{
+    ball_->setPos(900,900);
+    for(int i=0;i<OUR_TEAM;i++)
+        robot_[i]->setPos(900,900);
+    for(int i=0;i<MAX_OBSNUMBER_CONST*2;i++)
+        obstacle_[i]->setPos(900,900);                            //初始位置放到(900,900),不出现在视野里
+    velocity_->setLine(900,901,900,901);
 }
