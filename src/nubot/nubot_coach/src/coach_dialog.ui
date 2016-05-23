@@ -334,9 +334,9 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
   <widget class="QTabWidget" name="tab_change">
    <property name="geometry">
     <rect>
-     <x>720</x>
+     <x>730</x>
      <y>10</y>
-     <width>371</width>
+     <width>361</width>
      <height>561</height>
     </rect>
    </property>
@@ -415,7 +415,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     <widget class="QPushButton" name="connectRefe">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>10</x>
        <y>320</y>
        <width>101</width>
        <height>31</height>
@@ -433,8 +433,8 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
       <rect>
        <x>20</x>
        <y>360</y>
-       <width>341</width>
-       <height>386</height>
+       <width>331</width>
+       <height>161</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -503,7 +503,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     <widget class="QLabel" name="text_disply">
      <property name="geometry">
       <rect>
-       <x>130</x>
+       <x>120</x>
        <y>320</y>
        <width>91</width>
        <height>31</height>
@@ -516,7 +516,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     <widget class="QTextBrowser" name="currentState">
      <property name="geometry">
       <rect>
-       <x>230</x>
+       <x>220</x>
        <y>320</y>
        <width>131</width>
        <height>31</height>
@@ -529,7 +529,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     <widget class="QWidget" name="layoutWidget_5">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>10</x>
        <y>50</y>
        <width>161</width>
        <height>271</height>
@@ -611,7 +611,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     <widget class="QPushButton" name="startButton">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>10</x>
        <y>10</y>
        <width>161</width>
        <height>41</height>
@@ -627,7 +627,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     <widget class="QWidget" name="layoutWidget_4">
      <property name="geometry">
       <rect>
-       <x>200</x>
+       <x>190</x>
        <y>50</y>
        <width>161</width>
        <height>271</height>
@@ -709,7 +709,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     <widget class="QPushButton" name="stopButton">
      <property name="geometry">
       <rect>
-       <x>200</x>
+       <x>190</x>
        <y>10</y>
        <width>161</width>
        <height>41</height>
@@ -734,8 +734,8 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     <rect>
      <x>20</x>
      <y>80</y>
-     <width>701</width>
-     <height>461</height>
+     <width>702</width>
+     <height>469</height>
     </rect>
    </property>
   </widget>

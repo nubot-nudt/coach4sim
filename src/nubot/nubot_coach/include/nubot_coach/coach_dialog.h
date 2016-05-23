@@ -2,7 +2,6 @@
 #define DIALOG_H
 
 #include <QDialog>
-#include <QImage>
 #include <QString>
 #include <QDir>
 #include <QCloseEvent>
@@ -11,7 +10,6 @@
 #include <QTimer>
 #include <QVector>
 #include <QRadioButton>
-#include <QPainter>
 #include <QKeyEvent>
 #include <QWaitCondition>
 #include <QPixmap>
@@ -24,6 +22,8 @@
 #include <QMessageBox>
 #include <qgraphicsscene.h>
 #include <qgraphicsview.h>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsLineItem>
 
 #define  WIDTH  700/1800                                                    //场地缩放单位长度
 #define  HEIGHT 467/1200
@@ -51,6 +51,7 @@ public:
     void enableButton_();                         //断开裁判盒过后，启用所有按键
 
     void buttonDelay_();                          //按钮按下时的时延
+    void restItems_();                            //重置items位置
 
 public:
     nubot::Robot2coach_info * robot2coach_info_;        //用于存放机器人上传的信息
@@ -58,11 +59,16 @@ public:
     nubot::JSONparse *json_parse_;                      //解析json
     nubot::Coach2refbox *coach2refebox_;           //打包机器人信息准备上传
 
-    QImage field_img_init_;                       //场地图像
-    QImage robot_img_[OUR_TEAM];                  //机器人图像
-    QImage ball_img_;                             //球图像
-    QImage obs_img_;                              //障碍物图像
+    QPixmap field_img_init_;                       //场地图像
+    QPixmap robot_img_[OUR_TEAM];                  //机器人图像
+    QPixmap ball_img_;                             //球图像
+    QPixmap obs_img_;                              //障碍物图像
+
     QGraphicsScene *scene_;
+    QGraphicsPixmapItem *ball_;                    //ball item
+    QGraphicsPixmapItem *robot_[OUR_TEAM];         //robot item
+    QGraphicsPixmapItem *obstacle_[MAX_OBSNUMBER_CONST*2];      //obstacles item
+    QGraphicsLineItem *velocity_;                  //velocity item
 
     QTcpSocket *tcpSocket_;
     QHash<QTcpSocket*, QByteArray*> buffers;
