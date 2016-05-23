@@ -56,10 +56,11 @@ public:
     nubot::JSONparse *json_parse_;                      //解析json
     nubot::Coach2refbox *coach2refebox_;           //打包机器人信息准备上传
 
-    QImage field_img_init_;                       //场地图像
-    QImage robot_img_[OUR_TEAM];                  //机器人图像
-    QImage ball_img_;                             //球图像
-    QImage obs_img_;                              //障碍物图像
+    QPixmap field_img_init_;                       //场地图像
+    QPixmap field_img_;
+    QPixmap robot_img_[OUR_TEAM];                  //机器人图像
+    QPixmap ball_img_;                             //球图像
+    QPixmap obs_img_;                              //障碍物图像
 
     QTcpSocket *tcpSocket_;
     QHash<QTcpSocket*, QByteArray*> buffers;

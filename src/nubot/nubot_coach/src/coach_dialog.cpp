@@ -22,7 +22,7 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     ui=new Ui::Dialog;
     ui->setupUi(this);
     ui->radioButton->setChecked(true);
-    timer->start(30);                                                            //定时函数，每30ms
+    timer->start(50);                                                            //定时函数，每30ms
 
     this->setFixedSize(1100,700);                                                //固定窗口大小
 
@@ -63,9 +63,8 @@ Dialog::~Dialog()
 void Dialog::paintEvent(QPaintEvent *event)
 {
     QPainter painter;
-    QImage field_img;
-    field_img=field_img_init_;
-    painter.begin(&field_img);                                                     //设置绘图区域
+    field_img_=field_img_init_;
+    painter.begin(&field_img_);                                                     //设置绘图区域
 
     //根据选择画图
     if(display_choice_==0)
@@ -79,7 +78,7 @@ void Dialog::paintEvent(QPaintEvent *event)
                                   -robot2coach_info_->RobotInfo_[i].getLocation().y_*HEIGHT+233.5);   //设置图像中心为旋转的中心
                 painter.rotate(-robot2coach_info_->RobotInfo_[i].getHead().degree());     //旋转，单位度
                 //painter.setRenderHint(QPainter::Antialiasing);                          //抗锯齿，貌似没啥用
-                painter.drawImage(-15,-15,robot_img_[i]);                                 //图像大小是30x30，所以要移动15到图像中心
+                painter.drawPixmap(-15,-15,robot_img_[i]);                                 //图像大小是30x30，所以要移动15到图像中心
                 painter.rotate(robot2coach_info_->RobotInfo_[i].getHead().degree());
                 painter.translate(-robot2coach_info_->RobotInfo_[i].getLocation().x_*WIDTH-350,
                                   robot2coach_info_->RobotInfo_[i].getLocation().y_*HEIGHT-233.5);           //还原图像中心
@@ -89,7 +88,7 @@ void Dialog::paintEvent(QPaintEvent *event)
         //绘制球
         int num=ballPos_fuse();
         if(num)
-            painter.drawImage(robot2coach_info_->BallInfo_[num-1].getGlobalLocation().x_*WIDTH+340,
+            painter.drawPixmap(robot2coach_info_->BallInfo_[num-1].getGlobalLocation().x_*WIDTH+340,
                               -robot2coach_info_->BallInfo_[num-1].getGlobalLocation().y_*HEIGHT+223.5,
                               ball_img_);
 
@@ -101,7 +100,7 @@ void Dialog::paintEvent(QPaintEvent *event)
                 {
                     if(robot2coach_info_->Opponents_.size())
                         for(int i=0;i<robot2coach_info_->Opponents_.size();i++)
-                            painter.drawImage(robot2coach_info_->Opponents_[i].x_*WIDTH+340,
+                            painter.drawPixmap(robot2coach_info_->Opponents_[i].x_*WIDTH+340,
                                               -robot2coach_info_->Opponents_[i].y_*HEIGHT+223.5,obs_img_);
                     break;
                 }
@@ -116,14 +115,14 @@ void Dialog::paintEvent(QPaintEvent *event)
                               -robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().y_*HEIGHT+233.5);//设置图像中心为旋转的中心
             painter.rotate(-robot2coach_info_->RobotInfo_[display_choice_-1].getHead().degree());      //旋转，单位度
             //painter.setRenderHint(QPainter::Antialiasing);
-            painter.drawImage(-15,-15,robot_img_[display_choice_-1]);
+            painter.drawPixmap(-15,-15,robot_img_[display_choice_-1]);
             painter.rotate(robot2coach_info_->RobotInfo_[display_choice_-1].getHead().degree());
             painter.translate(-robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().x_*WIDTH-350,
                               robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().y_*HEIGHT-233.5);            //还原图像中心
 
             //绘制球
             if(robot2coach_info_->BallInfo_[display_choice_-1].isLocationKnown())
-                painter.drawImage(robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+340,
+                painter.drawPixmap(robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+340,
                                   -robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().y_*HEIGHT+223.5,
                                   ball_img_);
 
@@ -138,7 +137,7 @@ void Dialog::paintEvent(QPaintEvent *event)
             if(isObs_display_)
             {
                 for(int j=0;j<10;j++)
-                    painter.drawImage(robot2coach_info_->Obstacles_[display_choice_-1][j].x_*WIDTH+340,
+                    painter.drawPixmap(robot2coach_info_->Obstacles_[display_choice_-1][j].x_*WIDTH+340,
                                       -robot2coach_info_->Obstacles_[display_choice_-1][j].y_*HEIGHT+223.5,obs_img_);
             }
         }
@@ -149,9 +148,9 @@ void Dialog::paintEvent(QPaintEvent *event)
     {
         QMatrix matrix;
         matrix.rotate(180);
-        field_img = field_img.transformed(matrix);
+        field_img_ = field_img_.transformed(matrix);
     }
-    ui->display->setPixmap(QPixmap::fromImage(field_img));                         //显示到display
+    ui->display->setPixmap(field_img_);                         //显示到display
     //ui->display->resize(QSize(field_img_init_.width(),field_img_init_.height()));          //重置lab大小
 }
 
