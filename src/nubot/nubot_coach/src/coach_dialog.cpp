@@ -484,9 +484,9 @@ void Dialog::showRobot_info_()
         default: break;
         }
 
-        infoShow_[i]=QString("Role: %1, Action: %2, isDribble: %3").arg(current_roles).
-                                                                    arg(current_actions).
-                                                                    arg(robot2coach_info_->RobotInfo_[i].getDribbleState());
+        infoShow_[i]=QString("Role: %1, Action: %2, isDribble: %3").arg(current_roles,-14).
+                                                                    arg(current_actions,-20).
+                                                                    arg(robot2coach_info_->RobotInfo_[i].getDribbleState(),-1);
     }
     ui->infoShow_1->setText(infoShow_[0]);
     ui->infoShow_2->setText(infoShow_[1]);
@@ -501,13 +501,13 @@ void Dialog::showAll_info_()
     for(int i=0;i<OUR_TEAM;i++)
     {
         if(robot2coach_info_->RobotInfo_[i].isValid())
-            allShow_[i]=QString("NUM.%1: ROBOT_POS: (%2, %3); ROBOT_ORI: %4; BALL_GLO: (%5, %6); BALL_VEC: (%7, %8)").arg(i+1).
-                    arg(robot2coach_info_->RobotInfo_[i].getLocation().x_,0,'g',5).arg(robot2coach_info_->RobotInfo_[i].getLocation().y_,0,'g',5).
-                    arg(robot2coach_info_->RobotInfo_[i].getHead().degree(),0,'g',3).arg(robot2coach_info_->BallInfo_[i].getGlobalLocation().x_,0,'g',5).
-                    arg(robot2coach_info_->BallInfo_[i].getGlobalLocation().y_,0,'g',5).arg(robot2coach_info_->BallInfo_[i].getVelocity().x_,0,'g',5).
-                    arg(robot2coach_info_->BallInfo_[i].getVelocity().y_,0,'g',5);
+            allShow_[i]=QString("NUM.%1: ROBOT_POS: (%2, %3); ROBOT_ORI: %4; BALL_GLO: (%5, %6); BALL_VEC: (%7, %8)").arg(i+1,-3).
+                    arg(robot2coach_info_->RobotInfo_[i].getLocation().x_,-10).arg(robot2coach_info_->RobotInfo_[i].getLocation().y_,-10).
+                    arg(robot2coach_info_->RobotInfo_[i].getHead().degree(),-10).arg(robot2coach_info_->BallInfo_[i].getGlobalLocation().x_,-10).
+                    arg(robot2coach_info_->BallInfo_[i].getGlobalLocation().y_-10).arg(robot2coach_info_->BallInfo_[i].getVelocity().x_,-10).
+                    arg(robot2coach_info_->BallInfo_[i].getVelocity().y_,-10);
         else
-            allShow_[i]=QString("NUM.%1: ROBOT_POS: (0, 0); ROBOT_ORI: 0; BALL_GLO: (0, 0); BALL_VEC: (0, 0)").arg(i+1);
+            allShow_[i]=QString("NUM.%1: ROBOT_POS: (0, 0); ROBOT_ORI: 0; BALL_GLO: (0, 0); BALL_VEC: (0, 0)").arg(i+1,-3);
     }
     allShow_combine_=allShow_[0]+"\n"+allShow_[1]+"\n"+allShow_[2]+"\n"+allShow_[3]+"\n"+allShow_[4];
     ui->all_show->setText(allShow_combine_);
