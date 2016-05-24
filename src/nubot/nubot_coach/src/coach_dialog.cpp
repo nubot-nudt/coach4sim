@@ -30,6 +30,7 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     this->setFixedSize(1110,700);                                                //固定窗口大小
 
     field_img_init_.load("../../../src/nubot/nubot_coach/source/field.png");     //载入场地图像
+    field_img_home_.load("../../../src/nubot/nubot_coach/source/field_home.png");
     robot_img_[0].load("../../../src/nubot/nubot_coach/source/NUM1.png");        //载入机器人图像
     robot_img_[1].load("../../../src/nubot/nubot_coach/source/NUM2.png");
     robot_img_[2].load("../../../src/nubot/nubot_coach/source/NUM3.png");
@@ -43,10 +44,11 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     ball_img_=ball_img_.scaled(20,20);
     obs_img_=obs_img_.scaled(30,30);
 
-    scene_->addPixmap(field_img_init_);                    //载入球场
-    scene_->setSceneRect(0,0,700,467);                     //固定显示大小
+    field_=scene_->addPixmap(field_img_init_);             //载入初始化球场
+    scene_->setSceneRect(0,0,700,467);                     //固定显示区域
     ball_=scene_->addPixmap(ball_img_);                    //载入球
     ball_->setPos(900,900);
+
     for(int i=0;i<OUR_TEAM;i++)
     {
         robot_[i]=scene_->addPixmap(robot_img_[i]);        //载入机器人
@@ -57,12 +59,13 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
         obstacle_[i]=scene_->addPixmap(obs_img_);                 //载入障碍物
         obstacle_[i]->setPos(900,900);                            //初始位置放到(900,900),不出现在视野里
     }
-
     velocity_=scene_->addLine(900,900,901,901,QPen(Qt::red, 5));  //初始化速度曲线位置
+
     //一系列的标志初始化
     isObs_display_=false;
     isConnect_RefBox_=false;
 
+    isAtHome_=0;
     teamflag_=0;
     score_cyan_=0;
     score_magenta_=0;
@@ -422,6 +425,20 @@ void Dialog::on_change_ground_clicked()
     {
         ui->change_ground->setStyleSheet("border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)");
         groundflag_=1;
+    }
+}
+
+void Dialog::on_field_home_clicked()
+{
+    if(!isAtHome_)
+    {
+        field_->setPixmap(field_img_home_);     //改为奥拓楼球场
+        isAtHome_=true;
+    }
+    else if (isAtHome_)
+    {
+        field_->setPixmap(field_img_init_);
+        isAtHome_=false;
     }
 }
 

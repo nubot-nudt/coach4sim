@@ -57,14 +57,16 @@ public:
     nubot::Robot2coach_info * robot2coach_info_;        //用于存放机器人上传的信息
     nubot::MessageFromCoach * coach2robot_info_;        //用于存放coach下发的信息
     nubot::JSONparse *json_parse_;                      //解析json
-    nubot::Coach2refbox *coach2refebox_;           //打包机器人信息准备上传
+    nubot::Coach2refbox *coach2refebox_;                //打包机器人信息准备上传
 
     QPixmap field_img_init_;                       //场地图像
+    QPixmap field_img_home_;                       //奥拓楼场地图像
     QPixmap robot_img_[OUR_TEAM];                  //机器人图像
     QPixmap ball_img_;                             //球图像
     QPixmap obs_img_;                              //障碍物图像
 
     QGraphicsScene *scene_;
+    QGraphicsPixmapItem *field_;                   //field item
     QGraphicsPixmapItem *ball_;                    //ball item
     QGraphicsPixmapItem *robot_[OUR_TEAM];         //robot item
     QGraphicsPixmapItem *obstacle_[MAX_OBSNUMBER_CONST*2];      //obstacles item
@@ -84,6 +86,7 @@ private:
     bool isConnect_RefBox_;
     bool isUpload_worldmodel_;                        //是否上传worldmodel
     bool teamflag_;                                   //队伍标志位　　0 MAGENTA(默认),1 CYAN
+    bool isAtHome_;                                   //在家里调试，场地图不一样
     int  groundflag_;                                 //场地方向标志  1 left2right（默认），-1 right2left
 
     QString infoShow_[OUR_TEAM];                             //用于显示机器人策略信息
@@ -123,15 +126,16 @@ private slots:
     void on_goalkick_opp_clicked();
     void on_dropball_clicked();
     void on_cancel_clicked();
-    void on_obstacles_clicked();
 
     void on_cyan_clicked();                         //队伍选择
     void on_magenta_clicked();
 
-    void on_connectRefe_clicked();
-    void on_upload_clicked();
+    void on_connectRefe_clicked();                  //链接裁判盒
+    void on_upload_clicked();                       //上传
 
-    void on_change_ground_clicked();
+    void on_change_ground_clicked();                //场地方向选择
+    void on_field_home_clicked();                   //场地大小选择
+    void on_obstacles_clicked();                    //是否显示障碍物
 };
 
 

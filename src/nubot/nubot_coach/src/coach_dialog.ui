@@ -221,7 +221,7 @@
     <rect>
      <x>500</x>
      <y>550</y>
-     <width>213</width>
+     <width>223</width>
      <height>24</height>
     </rect>
    </property>
@@ -233,6 +233,16 @@
       </property>
       <property name="text">
        <string>Obstacles</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="field_home">
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string>atHome</string>
       </property>
      </widget>
     </item>
