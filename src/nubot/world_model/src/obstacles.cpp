@@ -103,7 +103,7 @@ Obstacles::MultiTargetTrackKalmanFilter()
             teammates[i+1] = robot_pos_[i];
     }
     tracker.TracksPrediction();
-    self_tracker.TracksPrediction();
+    //self_tracker.TracksPrediction();
 
     BOOST_FOREACH(Teammate &tm, teammates)
     {
@@ -126,6 +126,7 @@ Obstacles::MultiTargetTrackKalmanFilter()
     tracker.RearrangeTracks();
     tracker.TeammateIdentify(teammates);
     tracker.GetObjects(fuse_obs_);
+    return;
 
     self_tracker.MeasureAssociate(obs_measure_[AgentID_-1]);
     self_tracker.RearrangeTracks();
