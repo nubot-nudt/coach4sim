@@ -18,9 +18,8 @@
 
 #define TEAMMATESINFO	0
 #define MESSAGEFROMCOACHINFO	1
-#define TEAMMATESINFO_SIM	2
 
-#define N_ITEMS	3
+#define N_ITEMS	2
 
 #endif
 

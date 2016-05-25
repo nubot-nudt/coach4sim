@@ -350,8 +350,11 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
      <height>561</height>
     </rect>
    </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="control_tab">
     <attribute name="title">
@@ -532,8 +535,19 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
        <height>31</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+       <stylestrategy>PreferDefault</stylestrategy>
+      </font>
+     </property>
      <property name="focusPolicy">
       <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:rgb(255,0,0);</string>
      </property>
     </widget>
     <widget class="QWidget" name="layoutWidget_5">
@@ -737,6 +751,209 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     <attribute name="title">
      <string>Debug</string>
     </attribute>
+    <widget class="QPushButton" name="test_mode">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>161</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>TestMode</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="location_test">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>10</y>
+       <width>151</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>LocationTest</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>170</y>
+       <width>331</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QPushButton" name="move_mode">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="text">
+         <string>Move</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="isdribble">
+        <property name="text">
+         <string>isDribble</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="isavoidobs">
+        <property name="text">
+         <string>isAvoidObs</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>230</y>
+       <width>161</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QPushButton" name="catch_mode">
+        <property name="text">
+         <string>Catch</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pass_mode">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="text">
+         <string>Pass</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>230</y>
+       <width>152</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QPushButton" name="shoot_mode">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="text">
+         <string>Shoot</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="shoot_force"/>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="gridLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>331</width>
+       <height>101</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="3">
+       <widget class="QLabel" name="agentB">
+        <property name="text">
+         <string>ID_B</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="pointA">
+        <property name="text">
+         <string>PointA</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="angleA">
+        <property name="text">
+         <string>AngleA</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLabel" name="angleB">
+        <property name="text">
+         <string>AngleB</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLabel" name="pointB">
+        <property name="text">
+         <string>PointB</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="agentA">
+        <property name="text">
+         <string>ID_A</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="pointAin_X"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLineEdit" name="pointAin_Y"/>
+      </item>
+      <item row="1" column="4">
+       <widget class="QLineEdit" name="pointBin_X"/>
+      </item>
+      <item row="1" column="5">
+       <widget class="QLineEdit" name="pointBin_Y"/>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="agentA_ID"/>
+      </item>
+      <item row="0" column="4" colspan="2">
+       <widget class="QLineEdit" name="agentB_ID"/>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QLineEdit" name="angleAin"/>
+      </item>
+      <item row="2" column="4" colspan="2">
+       <widget class="QLineEdit" name="angleBin"/>
+      </item>
+     </layout>
+    </widget>
    </widget>
   </widget>
   <widget class="QGraphicsView" name="display">

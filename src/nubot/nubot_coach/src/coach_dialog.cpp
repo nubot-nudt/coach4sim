@@ -84,7 +84,7 @@ Dialog::~Dialog()
 void Dialog::paintEvent(QPaintEvent *event)
 {
     //根据选择画图
-    restItems_();
+    restItems_();      //重置items
     if(display_choice_==0)
     {
         //绘制机器人
@@ -253,7 +253,6 @@ void Dialog::on_Score0_down_clicked()
 //控制面板
 void Dialog::on_startButton_clicked()
 {
-    coach2robot_info_->MatchType=coach2robot_info_->MatchMode;
     coach2robot_info_->MatchMode=STARTROBOT;
     ui->currentState->setText("START ROBOT");
 }
@@ -266,78 +265,91 @@ void Dialog::on_stopButton_clicked()
 
 void Dialog::on_kickoff_clicked()
 {
+    coach2robot_info_->MatchType=OUR_KICKOFF;
     coach2robot_info_->MatchMode=OUR_KICKOFF;
     ui->currentState->setText("OUR KICKOFF");
 }
 
 void Dialog::on_kickoff_opp_clicked()
 {
+    coach2robot_info_->MatchType=OPP_KICKOFF;
     coach2robot_info_->MatchMode=OPP_KICKOFF;
     ui->currentState->setText("OPP KICKOFF");
 }
 
 void Dialog::on_penalty_clicked()
 {
+    coach2robot_info_->MatchType=OUR_PENALTY;
     coach2robot_info_->MatchMode=OUR_PENALTY;
     ui->currentState->setText("OUR PENALTY");
 }
 
 void Dialog::on_penalty_opp_clicked()
 {
+    coach2robot_info_->MatchType=OPP_PENALTY;
     coach2robot_info_->MatchMode=OPP_PENALTY;
     ui->currentState->setText("OPP PENALTY");
 }
 
 void Dialog::on_corner_clicked()
 {
+    coach2robot_info_->MatchType=OUR_CORNERKICK;
     coach2robot_info_->MatchMode=OUR_CORNERKICK;
     ui->currentState->setText("OUR CORNER");
 }
 
 void Dialog::on_corner_opp_clicked()
 {
+    coach2robot_info_->MatchType=OPP_CORNERKICK;
     coach2robot_info_->MatchMode=OPP_CORNERKICK;
     ui->currentState->setText("OPP CORNER");
 }
 
 void Dialog::on_throwin_clicked()
 {
+    coach2robot_info_->MatchType=OUR_THROWIN;
     coach2robot_info_->MatchMode=OUR_THROWIN;
     ui->currentState->setText("OUR THROWIN");
 }
 
 void Dialog::on_throwin_opp_clicked()
 {
+    coach2robot_info_->MatchType=OPP_THROWIN;
     coach2robot_info_->MatchMode=OPP_THROWIN;
     ui->currentState->setText("OPP THROWIN");
 }
 
 void Dialog::on_freekick_clicked()
 {
+    coach2robot_info_->MatchType=OUR_FREEKICK;
     coach2robot_info_->MatchMode=OUR_FREEKICK;
     ui->currentState->setText("OUR FREEKICK");
 }
 
 void Dialog::on_freekick_opp_clicked()
 {
+    coach2robot_info_->MatchType=OPP_FREEKICK;
     coach2robot_info_->MatchMode=OPP_FREEKICK;
     ui->currentState->setText("OPP FREEKICK");
 }
 
 void Dialog::on_goalkick_clicked()
 {
+    coach2robot_info_->MatchType=OUR_GOALKICK;
     coach2robot_info_->MatchMode=OUR_GOALKICK;
     ui->currentState->setText("OUR GOALKICK");
 }
 
 void Dialog::on_goalkick_opp_clicked()
 {
+    coach2robot_info_->MatchType=OPP_GOALKICK;
     coach2robot_info_->MatchMode=OPP_GOALKICK;
     ui->currentState->setText("OPP GOALKICK");
 }
 
 void Dialog::on_dropball_clicked()
 {
+    coach2robot_info_->MatchType=DROPBALL;
     coach2robot_info_->MatchMode=DROPBALL;
     ui->currentState->setText("DROPBALL");
 }
@@ -345,6 +357,67 @@ void Dialog::on_dropball_clicked()
 void Dialog::on_cancel_clicked()
 {
     ui->currentState->setText("CANCEL");
+}
+
+void Dialog::on_test_mode_clicked()
+{
+    coach2robot_info_->MatchMode=TEST;
+    ui->currentState->setText("TEST");
+}
+
+void Dialog::on_location_test_clicked()
+{
+    coach2robot_info_->TestMode=Location_test;
+}
+
+void Dialog::on_move_mode_clicked()
+{
+    bool _isDribble=ui->isdribble->isEnabled();
+    bool _isAvoid=ui->isavoidobs->isEnabled();
+    if(!_isDribble && !_isAvoid)
+        coach2robot_info_->TestMode=Move_NoBall_NoAvoid;
+    else if(!_isDribble && _isAvoid)
+        coach2robot_info_->TestMode=Move_NoBall_Avoid;
+    else if(_isDribble && !_isAvoid)
+        coach2robot_info_->TestMode=Move_Ball_NoAvoid;
+    else if(_isDribble && _isAvoid)
+        coach2robot_info_->TestMode=Move_Ball_Avoid;
+
+    coach2robot_info_->id_A=ui->agentA_ID->text().data()->toLatin1();
+    coach2robot_info_->pointA.x_=ui->pointAin_X->text().toShort();
+    coach2robot_info_->pointA.y_=ui->pointAin_Y->text().toShort();
+    coach2robot_info_->pointB.x_=ui->pointBin_X->text().toShort();
+    coach2robot_info_->pointB.y_=ui->pointBin_Y->text().toShort();
+    coach2robot_info_->angleA=ui->angleAin->text().toInt();
+    coach2robot_info_->angleB=ui->angleBin->text().toInt();
+}
+
+void Dialog::on_pass_mode_clicked()
+{
+    coach2robot_info_->TestMode=Pass_Ball;
+
+    coach2robot_info_->id_A=ui->agentA_ID->text().data()->toLatin1();
+    coach2robot_info_->id_B=ui->agentB_ID->text().data()->toLatin1();
+    coach2robot_info_->pointA.x_=ui->pointAin_X->text().toShort();
+    coach2robot_info_->pointA.y_=ui->pointAin_Y->text().toShort();
+    coach2robot_info_->pointB.x_=ui->pointBin_X->text().toShort();
+    coach2robot_info_->pointB.y_=ui->pointBin_Y->text().toShort();
+}
+
+void Dialog::on_catch_mode_clicked()
+{
+    coach2robot_info_->TestMode=Catch_Ball;
+}
+
+void Dialog::on_shoot_mode_clicked()
+{
+    coach2robot_info_->TestMode=Shoot_Ball;
+    coach2robot_info_->id_A=ui->agentA_ID->text().data()->toLatin1();
+    coach2robot_info_->pointA.x_=ui->pointAin_X->text().toShort();
+    coach2robot_info_->pointA.y_=ui->pointAin_Y->text().toShort();
+    coach2robot_info_->pointB.x_=ui->pointBin_X->text().toShort();
+    coach2robot_info_->pointB.y_=ui->pointBin_Y->text().toShort();
+    coach2robot_info_->kick_force=ui->shoot_force->text().data()->toLatin1();
 }
 
 //障碍物显示控制

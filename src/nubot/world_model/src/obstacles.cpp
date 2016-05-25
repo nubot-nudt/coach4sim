@@ -103,12 +103,12 @@ Obstacles::MultiTargetTrackKalmanFilter()
             teammates[i+1] = robot_pos_[i];
     }
     tracker.TracksPrediction();
-    self_tracker.TracksPrediction();
+   // self_tracker.TracksPrediction();
 
     BOOST_FOREACH(Teammate &tm, teammates)
     {
         int    robot_id  = tm.first;
-        DPoint robot_pos = tm.second;
+       // DPoint robot_pos = tm.second;
         std::vector<ObstacleObject> & obstacle_tmp = omni_obstacles_[robot_id-1];
         std::vector<obs_info> & measure_datas      = obs_measure_[robot_id -1];
         measure_datas.clear();
@@ -126,6 +126,8 @@ Obstacles::MultiTargetTrackKalmanFilter()
     tracker.RearrangeTracks();
     tracker.TeammateIdentify(teammates);
     tracker.GetObjects(fuse_obs_);
+
+    return ;   //only for coach
 
     self_tracker.MeasureAssociate(obs_measure_[AgentID_-1]);
     self_tracker.RearrangeTracks();

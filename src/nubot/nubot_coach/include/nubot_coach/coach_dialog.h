@@ -126,6 +126,13 @@ private slots:
     void on_goalkick_opp_clicked();
     void on_dropball_clicked();
     void on_cancel_clicked();
+    void on_test_mode_clicked();
+
+    void on_location_test_clicked();               //测试模式选择
+    void on_move_mode_clicked();
+    void on_pass_mode_clicked();
+    void on_catch_mode_clicked();
+    void on_shoot_mode_clicked();
 
     void on_cyan_clicked();                         //队伍选择
     void on_magenta_clicked();

@@ -26,12 +26,7 @@ public:
     void publish(const ros::TimerEvent &);
     void updateCoach_info(const nubot_common::CoachInfo & _coach_msg);
 public:
-#ifdef SIMULATION
-    Teammatesinfo_sim teammatesinfo_sim_;
     std::vector<Teammatesinfo> teammatesinfo_;
-#else
-    std::vector<Teammatesinfo> teammatesinfo_;
-#endif
     Obstacles obstacles_;
     nubot_common::WorldModelInfo world_model_info_;
     MessageFromCoach coach_info_;

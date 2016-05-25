@@ -2,3 +2,11 @@ Header header
 char Head
 char MatchMode
 char MatchType
+char TestMode           
+Point2d pointA
+Point2d pointB
+int32 angleA
+int32 angleB
+char idA
+char idB
+char kickforce

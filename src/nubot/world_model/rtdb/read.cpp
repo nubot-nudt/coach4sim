@@ -65,12 +65,12 @@ void sleep(double delay)
 // *************************
 int main(int argc, char **argv)
 {
-    /*struct MessageFromCoach
+    struct MessageFromCoach
     {
         char Head;
         char MatchMode;
         char MatchType;
-    }coach2robot;*/
+    }coach2robot;
     nubot::Teammatesinfo rtdb_teammate;
 	int lifetime;
     int value = 0;
@@ -85,8 +85,8 @@ int main(int argc, char **argv)
     while(end == 0)
 	{
         printf("\n\n\n");
-                lifetime = DB_get(2,TEAMMATESINFO, &rtdb_teammate);
-        printf("%d",rtdb_teammate.robot_info_.getID());
+                lifetime = DB_get(0,MESSAGEFROMCOACHINFO, &coach2robot);
+        printf("%d",coach2robot.MatchMode);
         sleep(0.5);
 	}
 

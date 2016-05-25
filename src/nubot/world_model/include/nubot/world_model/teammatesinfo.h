@@ -30,6 +30,22 @@ public:
     DPoint catch_pt;
     bool  isvalid;
 };
+/** 从Coach收到信息*/
+struct MessageFromCoach
+{
+    char Head;
+    char MatchMode;          //比赛模式
+    char MatchType;
+    char TestMode;           //测试模式
+    DPoint pointA;
+    DPoint pointB;
+    int angleA;
+    int angleB;
+    char id_A;
+    char id_B;
+    char kick_force;
+};
+
 
 class Teammatesinfo
 {
@@ -39,6 +55,7 @@ public:
     ObstacleObject obs_info_[MAX_OBSNUMBER_CONST];
     PassCommands   pass_cmds_;
 };
+
 
 class Teammatesinfo_sim
 {
