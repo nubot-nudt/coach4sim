@@ -33,14 +33,13 @@ public:
 /** 从Coach收到信息*/
 struct MessageFromCoach
 {
-    char Head;
     char MatchMode;          //比赛模式
     char MatchType;
     char TestMode;           //测试模式
-    DPoint pointA;
-    DPoint pointB;
-    int angleA;
-    int angleB;
+    DPoint2s pointA;
+    DPoint2s pointB;
+    short angleA;
+    short angleB;
     char id_A;
     char id_B;
     char kick_force;
@@ -54,6 +53,7 @@ public:
     BallObject     ball_info_;
     ObstacleObject obs_info_[MAX_OBSNUMBER_CONST];
     PassCommands   pass_cmds_;
+    //DPoint2s       obs_single_[OUR_TEAM][MAX_OBSNUMBER_CONST];               //用于测试障碍物融合效果
 };
 
 

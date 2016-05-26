@@ -7,13 +7,6 @@ namespace nubot{
 
 const int THRES_ROBOT_VALID_CONST=15;
 
-/*struct obs_info_zip
-{
-    double x,y;
-    double HRZ[4];
-    double HRH[4];
-};*/
-
 class Robot
 {
 

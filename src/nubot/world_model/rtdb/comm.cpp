@@ -326,7 +326,7 @@ void *receiveDataThread(void *arg)
         int SIZE=500;
 #endif
         recvLen = receiveData(*(int*)arg, recvBuffer, BUFFER_SIZE);
-        if(recvLen >SIZE && recvLen < SIZE+200)  //数据才会接收
+        if(recvLen >SIZE)  //数据才会接收
         {
 
             memcpy (&frameHeader, recvBuffer + indexBuffer, sizeof(frameHeader));
@@ -600,7 +600,7 @@ int main(int argc, char *argv[])
         memcpy(sendBuffer + indexBuffer, &frameHeader, sizeof(frameHeader));
         indexBuffer += sizeof(frameHeader);
 
-        for(i = 1; i < sharedRecs-1; i++)
+        for(i = 1; i < sharedRecs; i++)
         {
             // id
             memcpy(sendBuffer + indexBuffer, &rec[i].id, sizeof(rec[i].id));

@@ -21,10 +21,39 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     //connect(tcpSocket_, SIGNAL(readyRead()), this, SLOT(OnReceive_()));    //tcp/ip通信时用到的槽函数
     connect(tcpSocket_, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError_(QAbstractSocket::SocketError)));
 
-    ui=new Ui::Dialog;
+    ui=new Ui::Dialog;                                                           //部分ui的初始化
     ui->setupUi(this);
     ui->radioButton->setChecked(true);
     ui->display->setScene(scene_);
+
+    ui->agentA_ID->setText("1");
+    ui->agentA_ID->setValidator(new QIntValidator(1,5,ui->agentA_ID));           //设置输入范围
+    ui->agentB_ID->setText("1");
+    ui->agentB_ID->setValidator(new QIntValidator(1,5,ui->agentA_ID));
+
+    ui->pointAin_X->setText("0");
+    ui->pointAin_X->setValidator(new QIntValidator(-900,900,ui->pointAin_X));
+    ui->pointBin_X->setText("0");
+    ui->pointBin_X->setValidator(new QIntValidator(-900,900,ui->pointBin_X));
+
+    ui->pointAin_Y->setText("0");
+    ui->pointAin_Y->setValidator(new QIntValidator(-600,600,ui->pointAin_Y));
+    ui->pointBin_Y->setText("0");
+    ui->pointBin_Y->setValidator(new QIntValidator(-600,600,ui->pointBin_Y));
+
+    ui->angleAin->setText("0");
+    ui->angleAin->setValidator(new QIntValidator(-180,180,ui->angleAin));
+    ui->angleBin->setText("0");
+    ui->angleBin->setValidator(new QIntValidator(-180,180,ui->angleBin));
+
+    ui->shoot_force->setText("0");
+    ui->shoot_force->setValidator(new QIntValidator(0,50,ui->shoot_force));
+
+    ui->currentState->setText("STOP ROBOT");                                    //显示当前机器人状态
+    coach2robot_info_->MatchMode=STOPROBOT;
+    coach2robot_info_->MatchType=STOPROBOT;
+    coach2robot_info_->TestMode=0;
+
     timer->start(30);                                                            //定时函数，每30ms
 
     this->setFixedSize(1110,700);                                                //固定窗口大小
@@ -70,10 +99,6 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     score_cyan_=0;
     score_magenta_=0;
     groundflag_=1;
-
-    //ui->change_ground->setStyleSheet("border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)");
-    //ui->magenta->setStyleSheet("background-color:rgb(245, 12, 198);border:2px groove gray;border-radius:10px;padding:2px 4px;");
-    ui->currentState->setText("STOP ROBOT");                                  //显示当前机器人状态
 }
 
 Dialog::~Dialog()
@@ -368,6 +393,7 @@ void Dialog::on_test_mode_clicked()
 void Dialog::on_location_test_clicked()
 {
     coach2robot_info_->TestMode=Location_test;
+    ui->teststate_dis->setText("Location Test");
 }
 
 void Dialog::on_move_mode_clicked()
@@ -375,15 +401,27 @@ void Dialog::on_move_mode_clicked()
     bool _isDribble=ui->isdribble->isEnabled();
     bool _isAvoid=ui->isavoidobs->isEnabled();
     if(!_isDribble && !_isAvoid)
+    {
         coach2robot_info_->TestMode=Move_NoBall_NoAvoid;
+        ui->teststate_dis->setText("Move NoBall NoAvoid");
+    }
     else if(!_isDribble && _isAvoid)
+    {
         coach2robot_info_->TestMode=Move_NoBall_Avoid;
+        ui->teststate_dis->setText("Move NoBall Avoid");
+    }
     else if(_isDribble && !_isAvoid)
+    {
         coach2robot_info_->TestMode=Move_Ball_NoAvoid;
+        ui->teststate_dis->setText("Move Ball NoAvoid");
+    }
     else if(_isDribble && _isAvoid)
+    {
         coach2robot_info_->TestMode=Move_Ball_Avoid;
+        ui->teststate_dis->setText("Move Ball Avoid");
+    }
 
-    coach2robot_info_->id_A=ui->agentA_ID->text().data()->toLatin1();
+    coach2robot_info_->id_A=ui->agentA_ID->text().data()->toLatin1()-48;
     coach2robot_info_->pointA.x_=ui->pointAin_X->text().toShort();
     coach2robot_info_->pointA.y_=ui->pointAin_Y->text().toShort();
     coach2robot_info_->pointB.x_=ui->pointBin_X->text().toShort();
@@ -395,9 +433,10 @@ void Dialog::on_move_mode_clicked()
 void Dialog::on_pass_mode_clicked()
 {
     coach2robot_info_->TestMode=Pass_Ball;
+    ui->teststate_dis->setText("Pass Mode");
 
-    coach2robot_info_->id_A=ui->agentA_ID->text().data()->toLatin1();
-    coach2robot_info_->id_B=ui->agentB_ID->text().data()->toLatin1();
+    coach2robot_info_->id_A=ui->agentA_ID->text().data()->toLatin1()-48;
+    coach2robot_info_->id_B=ui->agentB_ID->text().data()->toLatin1()-48;
     coach2robot_info_->pointA.x_=ui->pointAin_X->text().toShort();
     coach2robot_info_->pointA.y_=ui->pointAin_Y->text().toShort();
     coach2robot_info_->pointB.x_=ui->pointBin_X->text().toShort();
@@ -407,17 +446,20 @@ void Dialog::on_pass_mode_clicked()
 void Dialog::on_catch_mode_clicked()
 {
     coach2robot_info_->TestMode=Catch_Ball;
+    ui->teststate_dis->setText("Catch Ball");
+    coach2robot_info_->id_A=ui->agentA_ID->text().data()->toLatin1()-48;
 }
 
 void Dialog::on_shoot_mode_clicked()
 {
     coach2robot_info_->TestMode=Shoot_Ball;
+    ui->teststate_dis->setText("Shoot Mode");
     coach2robot_info_->id_A=ui->agentA_ID->text().data()->toLatin1();
     coach2robot_info_->pointA.x_=ui->pointAin_X->text().toShort();
     coach2robot_info_->pointA.y_=ui->pointAin_Y->text().toShort();
     coach2robot_info_->pointB.x_=ui->pointBin_X->text().toShort();
     coach2robot_info_->pointB.y_=ui->pointBin_Y->text().toShort();
-    coach2robot_info_->kick_force=ui->shoot_force->text().data()->toLatin1();
+    coach2robot_info_->kick_force=ui->shoot_force->text().data()->toLatin1()-48;
 }
 
 //障碍物显示控制

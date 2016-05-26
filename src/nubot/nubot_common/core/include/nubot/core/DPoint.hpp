@@ -51,7 +51,7 @@ public:
 typedef DPoint_<int>    DPoint2i;
 typedef DPoint_<float>  DPoint2f;
 typedef DPoint_<double> DPoint2d;
-//typedef DPoint_<short>  DPoint2si;
+typedef DPoint_<short>  DPoint2s;
 typedef DPoint2d DPoint;
 //ypedef DPoint2d DPoint2si;
 //////////////////////////////// Cartesian  Point ////////////////////////////////
