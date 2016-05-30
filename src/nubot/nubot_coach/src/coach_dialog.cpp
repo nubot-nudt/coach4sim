@@ -50,9 +50,10 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     ui->shoot_force->setValidator(new QIntValidator(0,50,ui->shoot_force));
 
     ui->currentState->setText("STOP ROBOT");                                    //显示当前机器人状态
+    ui->teststate_dis->setText("STOP ROBOT");
     coach2robot_info_->MatchMode=STOPROBOT;
     coach2robot_info_->MatchType=STOPROBOT;
-    coach2robot_info_->TestMode=0;
+    coach2robot_info_->TestMode=Test_Stop;
 
     timer->start(30);                                                            //定时函数，每30ms
 
@@ -75,19 +76,30 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
 
     field_=scene_->addPixmap(field_img_init_);             //载入初始化球场
     scene_->setSceneRect(0,0,700,467);                     //固定显示区域
-    ball_=scene_->addPixmap(ball_img_);                    //载入球
-    ball_->setPos(900,900);
 
-    for(int i=0;i<OUR_TEAM;i++)
-    {
-        robot_[i]=scene_->addPixmap(robot_img_[i]);        //载入机器人
-        robot_[i]->setPos(900,900);
-    }
     for(int i=0;i<MAX_OBSNUMBER_CONST*2;i++)
     {
         obstacle_[i]=scene_->addPixmap(obs_img_);                 //载入障碍物
         obstacle_[i]->setPos(900,900);                            //初始位置放到(900,900),不出现在视野里
     }
+
+    role_[0]=scene_->addText("GOALIE");
+    role_[1]=scene_->addText("ACTIVE");
+    role_[2]=scene_->addText("PASSIVE");
+    role_[3]=scene_->addText("MIDFIELD");
+    role_[4]=scene_->addText("ASSISTANT");
+
+    for(int i=0;i<OUR_TEAM;i++)
+    {
+        robot_[i]=scene_->addPixmap(robot_img_[i]);        //载入机器人
+        robot_[i]->setPos(900,900);
+        role_[i]->setDefaultTextColor(QColor(255,200,0));
+        role_[i]->setPos(900,900);
+    }
+
+    ball_=scene_->addPixmap(ball_img_);                    //载入球
+    ball_->setPos(900,900);
+
     velocity_=scene_->addLine(900,900,901,901,QPen(Qt::red, 5));  //初始化速度曲线位置
 
     //一系列的标志初始化
@@ -117,18 +129,19 @@ void Dialog::paintEvent(QPaintEvent *event)
         {
             if(robot2coach_info_->RobotInfo_[i].isValid())
             {
-                robot_[i]->setPos(groundflag_*robot2coach_info_->RobotInfo_[i].getLocation().x_*WIDTH+335,
-                                  -groundflag_*robot2coach_info_->RobotInfo_[i].getLocation().y_*HEIGHT+218.5);
+                robot_[i]->setPos(groundflag_*_robot_pos[i].x_*WIDTH+335,-groundflag_*_robot_pos[i].y_*HEIGHT+218.5);
                 robot_[i]->setTransformOriginPoint(15,15);
-                robot_[i]->setRotation((groundflag_-1)*90-robot2coach_info_->RobotInfo_[i].getHead().degree());
+                robot_[i]->setRotation((groundflag_-1)*90-_robot_ori[i]);
+                role_[robot2coach_info_->RobotInfo_[i].getCurrentRole()]->setPos(groundflag_*_robot_pos[i].x_*WIDTH+320,
+                                                                                 -groundflag_*_robot_pos[i].y_*HEIGHT+195);
             }
         }
+
 
         //绘制球
         int num=ballPos_fuse();
         if(num)
-            ball_->setPos(groundflag_*robot2coach_info_->BallInfo_[num-1].getGlobalLocation().x_*WIDTH+340,
-                          -groundflag_*robot2coach_info_->BallInfo_[num-1].getGlobalLocation().y_*HEIGHT+223.5);
+            ball_->setPos(groundflag_*_ball_pos[num-1].x_*WIDTH+340,-groundflag_*_ball_pos[num-1].y_*HEIGHT+223.5);
 
         //绘制融合后的障碍物
         if(isObs_display_)
@@ -138,8 +151,7 @@ void Dialog::paintEvent(QPaintEvent *event)
                 {
                     if(robot2coach_info_->Opponents_.size())
                         for(int i=0;i<robot2coach_info_->Opponents_.size();i++)
-                            obstacle_[i]->setPos(groundflag_*robot2coach_info_->Opponents_[i].x_*WIDTH+335,
-                                                 -groundflag_*robot2coach_info_->Opponents_[i].y_*HEIGHT+218.5);
+                            obstacle_[i]->setPos(groundflag_*_obstacles[i].x_*WIDTH+335,-groundflag_*_obstacles[i].y_*HEIGHT+218.5);
                     break;
                 }
             }
@@ -149,22 +161,19 @@ void Dialog::paintEvent(QPaintEvent *event)
         if(robot2coach_info_->RobotInfo_[display_choice_-1].isValid())
         {
             //绘制机器人
-            robot_[display_choice_-1]->setPos(groundflag_*robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().x_*WIDTH+335,
-                                              -groundflag_*robot2coach_info_->RobotInfo_[display_choice_-1].getLocation().y_*HEIGHT+218.5);
+            robot_[display_choice_-1]->setPos(groundflag_*_robot_pos[display_choice_-1].x_*WIDTH+335,-groundflag_*_robot_pos[display_choice_-1].y_*HEIGHT+218.5);
             robot_[display_choice_-1]->setTransformOriginPoint(15,15);
-            robot_[display_choice_-1]->setRotation((groundflag_-1)*90-robot2coach_info_->RobotInfo_[display_choice_-1].getHead().degree());
+            robot_[display_choice_-1]->setRotation((groundflag_-1)*90-_robot_ori[display_choice_-1]);
 
             //绘制球
             if(robot2coach_info_->BallInfo_[display_choice_-1].isLocationKnown())
             {
-                ball_->setPos(groundflag_*robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+340,
-                              -groundflag_*robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().y_*HEIGHT+223.5);
+                ball_->setPos(groundflag_*_ball_pos[display_choice_-1].x_*WIDTH+340,-groundflag_*_ball_pos[display_choice_-1].y_*HEIGHT+223.5);
 
                 //绘制当前机器人识别的球速
-                velocity_->setLine(groundflag_*robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+350,
-                                   -groundflag_*robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().y_*HEIGHT+233.5,
-                                   groundflag_*(robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().x_*WIDTH+robot2coach_info_->BallInfo_[display_choice_-1].getVelocity().x_)+350,
-                                   -groundflag_*(robot2coach_info_->BallInfo_[display_choice_-1].getGlobalLocation().y_*HEIGHT+robot2coach_info_->BallInfo_[display_choice_-1].getVelocity().y_)+233.5);
+                velocity_->setLine(groundflag_*_ball_pos[display_choice_-1].x_*WIDTH+350,-groundflag_*_ball_pos[display_choice_-1].y_*HEIGHT+233.5,
+                                   groundflag_*(_ball_pos[display_choice_-1].x_*WIDTH+_ball_vel[display_choice_-1].x_)+350,
+                                   -groundflag_*(_ball_pos[display_choice_-1].y_*HEIGHT+_ball_vel[display_choice_-1].y_)+233.5);
             }
             //绘制当前机器人识别的障碍物
             if(isObs_display_)
@@ -181,6 +190,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)               //保证安全，任�
     {
          coach2robot_info_->MatchMode=STOPROBOT;
          ui->currentState->setText("STOP ROBOT");
+         ui->teststate_dis->setText("STOP ROBOT");
     }
 }
 
@@ -193,6 +203,18 @@ void Dialog::closeEvent(QCloseEvent *event)                //结束时关闭Ros�
 
 void Dialog::timerUpdate()
 {
+    //简化数据结构
+    for(int i=0;i<OUR_TEAM;i++)
+    {
+        _robot_pos[i]=robot2coach_info_->RobotInfo_[i].getLocation();
+        _robot_vel[i]=robot2coach_info_->RobotInfo_[i].getVelocity();
+        _robot_ori[i]=robot2coach_info_->RobotInfo_[i].getHead().degree();
+        _ball_pos[i]=robot2coach_info_->BallInfo_[i].getGlobalLocation();
+        _ball_vel[i]=robot2coach_info_->BallInfo_[i].getVelocity();
+    }
+    for(int i=0;i<robot2coach_info_->Opponents_.size();i++)
+        _obstacles[i]=robot2coach_info_->Opponents_[i];
+
     update();                                             //重绘
     showRobot_info_();                                    //更新显示信息
     showAll_info_();
@@ -218,7 +240,6 @@ void Dialog::timerUpdate()
         else
             count1++;
     }
-    //qDebug()<<groundflag_<<" "<<teamflag_;
 }
 
 //显示的选择
@@ -388,6 +409,31 @@ void Dialog::on_test_mode_clicked()
 {
     coach2robot_info_->MatchMode=TEST;
     ui->currentState->setText("TEST");
+    ui->teststate_dis->setText("Test Begin");
+
+    //初始化
+    coach2robot_info_->id_A=1;
+    coach2robot_info_->id_B=1;
+    coach2robot_info_->pointA=nubot::DPoint(0,0);
+    coach2robot_info_->pointB=nubot::DPoint(0,0);
+    coach2robot_info_->angleA=0;
+    coach2robot_info_->angleB=0;
+    coach2robot_info_->kick_force=0;
+}
+
+void Dialog::on_test_stop_clicked()
+{
+    coach2robot_info_->TestMode=Test_Stop;
+    ui->teststate_dis->setText("Test Stop");
+
+    //置位
+    coach2robot_info_->id_A=1;
+    coach2robot_info_->id_B=1;
+    coach2robot_info_->pointA=nubot::DPoint(0,0);
+    coach2robot_info_->pointB=nubot::DPoint(0,0);
+    coach2robot_info_->angleA=0;
+    coach2robot_info_->angleB=0;
+    coach2robot_info_->kick_force=0;
 }
 
 void Dialog::on_location_test_clicked()
@@ -396,10 +442,19 @@ void Dialog::on_location_test_clicked()
     ui->teststate_dis->setText("Location Test");
 }
 
+void Dialog::on_circle_test_clicked()
+{
+    coach2robot_info_->TestMode=Circle_test;
+    ui->teststate_dis->setText("Circle Test");
+
+    coach2robot_info_->angleA=ui->angleAin->text().toInt();
+    coach2robot_info_->angleB=ui->angleBin->text().toInt();
+}
+
 void Dialog::on_move_mode_clicked()
 {
-    bool _isDribble=ui->isdribble->isEnabled();
-    bool _isAvoid=ui->isavoidobs->isEnabled();
+    bool _isDribble=ui->isdribble->checkState();
+    bool _isAvoid=ui->isavoidobs->checkState();
     if(!_isDribble && !_isAvoid)
     {
         coach2robot_info_->TestMode=Move_NoBall_NoAvoid;
@@ -491,7 +546,7 @@ void Dialog::on_connectRefe_clicked()
 {
     if(!isConnect_RefBox_)
     {
-        QString IP="173.17.1.2";
+        QString IP="172.16.1.2";
         quint16 prot=28097;
         tcpSocket_->abort();
         tcpSocket_->connectToHost(IP,prot);
@@ -560,27 +615,10 @@ void Dialog::on_field_home_clicked()
 //显示机器人策略信息
 void Dialog::showRobot_info_()
 {
-    QString current_roles;
     QString current_actions;
 
     for(int i=0;i<OUR_TEAM;i++)
     {
-        switch (robot2coach_info_->RobotInfo_[i].getCurrentRole())
-        {
-        case 0: current_roles="GOALIE";break;
-        case 1: current_roles="ACTIVE";break;
-        case 2: current_roles="PASSIVE";break;
-        case 3: current_roles="MIDFIELD";break;
-        case 4: current_roles="ASSISTANT";break;
-        case 5: current_roles="ACIDPASSIVE";break;
-        case 6: current_roles="GAZER";break;
-        case 7: current_roles="BLOCK";break;
-        case 8: current_roles="NOROLE";break;
-        case 9: current_roles="CATCHOFPASS";break;
-        case 10: current_roles="PASSOFPASS";break;
-        default: break;
-        }
-
         switch (robot2coach_info_->RobotInfo_[i].getCurrentAction())
         {
         case 0: current_actions="Stucked";break;
@@ -599,9 +637,7 @@ void Dialog::showRobot_info_()
         default: break;
         }
 
-        infoShow_[i]=QString("Role: %1, Action: %2, isDribble: %3").arg(current_roles,-14).
-                                                                    arg(current_actions,-20).
-                                                                    arg(robot2coach_info_->RobotInfo_[i].getDribbleState(),-1);
+        infoShow_[i]=QString("Action: %2, isDribble: %3").arg(current_actions).arg(robot2coach_info_->RobotInfo_[i].getDribbleState());
     }
     ui->infoShow_1->setText(infoShow_[0]);
     ui->infoShow_2->setText(infoShow_[1]);
@@ -616,13 +652,14 @@ void Dialog::showAll_info_()
     for(int i=0;i<OUR_TEAM;i++)
     {
         if(robot2coach_info_->RobotInfo_[i].isValid())
-            allShow_[i]=QString("NUM.%1: ROBOT_POS: (%2, %3); ROBOT_ORI: %4; BALL_GLO: (%5, %6); BALL_VEC: (%7, %8)").arg(i+1,-3).
-                    arg(robot2coach_info_->RobotInfo_[i].getLocation().x_,-10).arg(robot2coach_info_->RobotInfo_[i].getLocation().y_,-10).
-                    arg(robot2coach_info_->RobotInfo_[i].getHead().degree(),-10).arg(robot2coach_info_->BallInfo_[i].getGlobalLocation().x_,-10).
-                    arg(robot2coach_info_->BallInfo_[i].getGlobalLocation().y_-10).arg(robot2coach_info_->BallInfo_[i].getVelocity().x_,-10).
-                    arg(robot2coach_info_->BallInfo_[i].getVelocity().y_,-10);
+        {
+            short distance=_robot_pos[i].distance(_ball_pos[i]);
+            allShow_[i]=QString("NUM.%1:  ROBOT_POS: (%2, %3)  ROBOT_ORI: %4  ROBOT_VEL: (%5, %6)  BALL_GLO: (%7, %8)  BALL_VEC: (%9, %10)  DIS_R2B: %11").arg(i+1).
+                    arg(_robot_pos[i].x_,4).arg(_robot_pos[i].y_,4).arg(_robot_ori[i],4).arg(_robot_vel[i].x_,4).arg(_robot_vel[i].y_,4)
+                    .arg(_ball_pos[i].x_,4).arg(_ball_pos[i].y_,4).arg(_ball_vel[i].x_,4).arg(_ball_vel[i].y_,4).arg(distance,3);
+        }
         else
-            allShow_[i]=QString("NUM.%1: ROBOT_POS: (0, 0); ROBOT_ORI: 0; BALL_GLO: (0, 0); BALL_VEC: (0, 0)").arg(i+1,-3);
+            allShow_[i]=QString("NUM.%1:  ROBOT_POS: (  0,  0)  ROBOT_ORI:  0  ROBOT_VEL: (  0,  0)  BALL_GLO: (  0,  0)  BALL_VEC: (  0,  0)  DIS_R2B:  0").arg(i+1);
     }
     allShow_combine_=allShow_[0]+"\n"+allShow_[1]+"\n"+allShow_[2]+"\n"+allShow_[3]+"\n"+allShow_[4];
     ui->all_show->setText(allShow_combine_);
@@ -1007,7 +1044,10 @@ void Dialog::restItems_()
 {
     ball_->setPos(900,900);
     for(int i=0;i<OUR_TEAM;i++)
+    {
         robot_[i]->setPos(900,900);
+        role_[i]->setPos(900,900);
+    }
     for(int i=0;i<MAX_OBSNUMBER_CONST*2;i++)
         obstacle_[i]->setPos(900,900);                            //初始位置放到(900,900),不出现在视野里
     velocity_->setLine(900,901,900,901);

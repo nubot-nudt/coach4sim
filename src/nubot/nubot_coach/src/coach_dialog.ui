@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1110</width>
-    <height>700</height>
+    <height>694</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -749,7 +749,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
    </widget>
    <widget class="QWidget" name="test_tab">
     <attribute name="title">
-     <string>Debug</string>
+     <string>Test</string>
     </attribute>
     <widget class="QPushButton" name="test_mode">
      <property name="geometry">
@@ -773,9 +773,9 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     <widget class="QPushButton" name="location_test">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>10</y>
-       <width>151</width>
+       <x>10</x>
+       <y>280</y>
+       <width>131</width>
        <height>41</height>
       </rect>
      </property>
@@ -844,7 +844,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
          <enum>Qt::ClickFocus</enum>
         </property>
         <property name="maxLength">
-         <number>3</number>
+         <number>4</number>
         </property>
        </widget>
       </item>
@@ -854,7 +854,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
          <enum>Qt::ClickFocus</enum>
         </property>
         <property name="maxLength">
-         <number>3</number>
+         <number>4</number>
         </property>
        </widget>
       </item>
@@ -864,7 +864,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
          <enum>Qt::ClickFocus</enum>
         </property>
         <property name="maxLength">
-         <number>3</number>
+         <number>4</number>
         </property>
        </widget>
       </item>
@@ -874,7 +874,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
          <enum>Qt::ClickFocus</enum>
         </property>
         <property name="maxLength">
-         <number>3</number>
+         <number>4</number>
         </property>
        </widget>
       </item>
@@ -907,7 +907,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
          <enum>Qt::ClickFocus</enum>
         </property>
         <property name="maxLength">
-         <number>3</number>
+         <number>4</number>
         </property>
        </widget>
       </item>
@@ -917,7 +917,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
          <enum>Qt::ClickFocus</enum>
         </property>
         <property name="maxLength">
-         <number>3</number>
+         <number>4</number>
         </property>
        </widget>
       </item>
@@ -1033,6 +1033,51 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
        </widget>
       </item>
      </layout>
+    </widget>
+    <widget class="QPushButton" name="test_stop">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>10</y>
+       <width>151</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>TestStop</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="circle_test">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>280</y>
+       <width>181</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>Circle Test</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="tips">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>320</y>
+       <width>181</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;AngleA=Vx, AngleB=radius&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
     </widget>
    </widget>
   </widget>

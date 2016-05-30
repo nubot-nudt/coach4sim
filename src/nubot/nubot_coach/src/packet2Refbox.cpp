@@ -38,7 +38,7 @@ void Packet2refbox::setTeamIntention(const QString intention)
 }
 
 //Robot level setters
-void Packet2refbox::setRobotPose(const quint8 robotId, const DPoint pose, const Angle orien)
+void Packet2refbox::setRobotPose(const quint8 robotId, const DPoint2s pose, const short orien)
 {
     int index = 0;
     bool isFound = false;
@@ -60,7 +60,7 @@ void Packet2refbox::setRobotPose(const quint8 robotId, const DPoint pose, const 
     }
 }
 
-void Packet2refbox::setRobotTargetPose(const quint8 robotId, const DPoint targetpose)
+void Packet2refbox::setRobotTargetPose(const quint8 robotId, const DPoint2s targetpose)
 {
     int index = 0;
     bool isFound = false;
@@ -81,7 +81,7 @@ void Packet2refbox::setRobotTargetPose(const quint8 robotId, const DPoint target
     }
 }
 
-void Packet2refbox::setRobotVelocity(const quint8 robotId, const DPoint velocity)
+void Packet2refbox::setRobotVelocity(const quint8 robotId, const DPoint2s velocity)
 {
     int index = 0;
     bool isFound = false;
@@ -170,7 +170,7 @@ void Packet2refbox::setRobotBallPossession(const quint8 robotId, const bool hasB
 }
 
 //Ball setters
-void Packet2refbox::addBall(const DPoint position, const DPoint velocity, const float confidence)
+void Packet2refbox::addBall(const DPoint2s position, const DPoint2s velocity, const float confidence)
 {
     ballStructure ball;
 
@@ -182,7 +182,7 @@ void Packet2refbox::addBall(const DPoint position, const DPoint velocity, const 
 }
 
 //Obstacle setters
-void Packet2refbox::addObstacle(const DPoint position, const DPoint velocity)
+void Packet2refbox::addObstacle(const DPoint2s position, const DPoint2s velocity)
 {
     obstacleStructure obstacle;
 
@@ -315,7 +315,7 @@ void Packet2refbox::addRobotsJSON(QJsonArray &array)
             QJsonArray pose;
             QJsonValue poseX=-robotIter->pose.y_;     //比赛规定的坐标跟我们有区别，纵坐标=横坐标，横坐标=-纵坐标
             QJsonValue poseY=robotIter->pose.x_;
-            QJsonValue posePhi=robotIter->orien.radian_+PI/2;
+            QJsonValue posePhi=robotIter->orien+90;
             pose.append(poseX);
             pose.append(poseY);
             pose.append(posePhi);

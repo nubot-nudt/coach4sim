@@ -74,7 +74,6 @@ public:
     DPoint getLocation();
     Angle  getHead();
     DPoint getVelocity();
-    DPoint getAcc();
     double getW();
     bool   isKickoff();
     bool   isStuck();

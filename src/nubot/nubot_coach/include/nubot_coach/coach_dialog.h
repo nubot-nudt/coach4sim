@@ -24,6 +24,7 @@
 #include <qgraphicsview.h>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsLineItem>
+#include <QGraphicsTextItem>
 
 #define  WIDTH  700/1800                                                    //场地缩放单位长度
 #define  HEIGHT 467/1200
@@ -71,10 +72,19 @@ public:
     QGraphicsPixmapItem *robot_[OUR_TEAM];         //robot item
     QGraphicsPixmapItem *obstacle_[MAX_OBSNUMBER_CONST*2];      //obstacles item
     QGraphicsLineItem *velocity_;                  //velocity item
+    QGraphicsTextItem *role_[OUR_TEAM];
 
     QTcpSocket *tcpSocket_;
     QHash<QTcpSocket*, QByteArray*> buffers;
     QHash<QTcpSocket*, qint32*> sizes;
+
+    //用于绘图和显示的简化数据
+    nubot::DPoint2s _robot_pos[OUR_TEAM];
+    nubot::DPoint2s _robot_vel[OUR_TEAM];
+    short _robot_ori[OUR_TEAM];
+    nubot::DPoint2s _ball_pos[OUR_TEAM];
+    nubot::DPoint2s _ball_vel[OUR_TEAM];
+    nubot::DPoint2s _obstacles[MAX_OBSNUMBER_CONST*2];
 
 private:
     Ui::Dialog *ui;
@@ -126,9 +136,12 @@ private slots:
     void on_goalkick_opp_clicked();
     void on_dropball_clicked();
     void on_cancel_clicked();
+
     void on_test_mode_clicked();
+    void on_test_stop_clicked();
 
     void on_location_test_clicked();               //测试模式选择
+    void on_circle_test_clicked();
     void on_move_mode_clicked();
     void on_pass_mode_clicked();
     void on_catch_mode_clicked();

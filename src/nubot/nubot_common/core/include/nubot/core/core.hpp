@@ -52,6 +52,7 @@ enum MatchMode { STOPROBOT   = 0,
 
 enum TestMode
 {
+    Test_Stop =0,
     Move_NoBall_NoAvoid = 10,
     Move_NoBall_Avoid   = 11,
     Move_Ball_NoAvoid   = 12,
@@ -59,7 +60,8 @@ enum TestMode
     Pass_Ball  =2,
     Catch_Ball =3,
     Shoot_Ball =4,
-    Location_test =5
+    Location_test =5,
+    Circle_test =6
 };
 
 struct obs_info
