@@ -12,6 +12,8 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
 
     QTimer *timer=new QTimer(this);
     tcpSocket_=new QTcpSocket(this);
+    tcpUpload_=new QTcpSocket(this);
+
     QByteArray *buffer = new QByteArray();
     qint32 *s = new qint32(0);
     buffers.insert(tcpSocket_, buffer);
@@ -235,6 +237,7 @@ void Dialog::timerUpdate()
         if(count1==2)                                        //90ms一次
         {
             coach2refebox_->packWorldmodel_(robot2coach_info_);
+            tcpUpload_->write(coach2refebox_->upload_array_);
             count1=0;
         }
         else

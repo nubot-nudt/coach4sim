@@ -18,6 +18,7 @@ public:
 public:
     Packet2refbox nubotpacket_;
     QString actions_[13];
+    QByteArray upload_array_;            //上传的数据
     int  jsonSize;
 
     //简化上传数据

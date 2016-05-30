@@ -83,10 +83,10 @@ void Coach2refbox::packWorldmodel_(Robot2coach_info *robot2coach_info_)
     jsonSize=nubotpacket_.getSize();
     QJsonDocument document;
     document.setObject(*nubotpacket_.jsonObject_);
-    QByteArray byte_array = document.toJson(QJsonDocument::Compact);            //把这个用tcpip传上去
-    std::string json=byte_array.data();
+    upload_array_ = document.toJson(QJsonDocument::Compact);            //把这个用tcpip传上去
+    //std::string json=upload_array_.data();
     //qDebug()<<byte_array;
-    json_output<<json;
+    //json_output<<json;
 }
 
 void Coach2refbox::cleanPacket_()

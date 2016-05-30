@@ -13,7 +13,7 @@
 #include <QKeyEvent>
 #include <QWaitCondition>
 #include <QPixmap>
-#include <QtNetwork/QUdpSocket>
+#include <QtNetwork/QTcpServer>
 #include <QtNetwork/QTcpSocket>
 #include <ui_coach_dialog.h>
 #include <robot2coach.h>
@@ -75,6 +75,7 @@ public:
     QGraphicsTextItem *role_[OUR_TEAM];
 
     QTcpSocket *tcpSocket_;
+    QTcpSocket *tcpUpload_;                        //用于上传的socket
     QHash<QTcpSocket*, QByteArray*> buffers;
     QHash<QTcpSocket*, qint32*> sizes;
 
