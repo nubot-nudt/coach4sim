@@ -29,6 +29,21 @@ void Coach2refbox::packWorldmodel_(Robot2coach_info *robot2coach_info_)
 {
     cleanPacket_();
 
+    static  std::ofstream json_output("/home/nubot8/json.txt");
+
+    //简化上传数据
+    for(int i=0;i<OUR_TEAM;i++)
+    {
+        _robot_pos[i]=robot2coach_info_->RobotInfo_[i].getLocation();
+        _robot_vel[i]=robot2coach_info_->RobotInfo_[i].getVelocity();
+        _robot_target[i]=robot2coach_info_->RobotInfo_[i].getTarget();
+        _robot_ori[i]=robot2coach_info_->RobotInfo_[i].getHead().degree();
+        _ball_pos[i]=robot2coach_info_->BallInfo_[i].getGlobalLocation();
+        _ball_vel[i]=robot2coach_info_->BallInfo_[i].getVelocity();
+    }
+    for(int i=0;i<robot2coach_info_->Opponents_.size();i++)
+        _obstacles[i]=robot2coach_info_->Opponents_[i];
+
     //Team level setters
     nubotpacket_.setTeamIntention(QString("active"));
 
@@ -38,9 +53,9 @@ void Coach2refbox::packWorldmodel_(Robot2coach_info *robot2coach_info_)
         if(robot2coach_info_->RobotInfo_[i].isValid())
         {
             nubotpacket_.addRobot(i+1);
-            nubotpacket_.setRobotPose(i+1,robot2coach_info_->RobotInfo_[i].getLocation(),robot2coach_info_->RobotInfo_[i].getHead());
-            nubotpacket_.setRobotVelocity(i+1,robot2coach_info_->RobotInfo_[i].getVelocity());
-            nubotpacket_.setRobotTargetPose(i+1,robot2coach_info_->RobotInfo_[i].getTarget());
+            nubotpacket_.setRobotPose(i+1,_robot_pos[i],_robot_ori[i]);
+            nubotpacket_.setRobotVelocity(i+1,_robot_vel[i]);
+            nubotpacket_.setRobotTargetPose(i+1,_robot_target[i]);
             nubotpacket_.setRobotIntention(i+1,actions_[robot2coach_info_->RobotInfo_[i].getCurrentAction()]);
             nubotpacket_.setRobotBatteryLevel(i+1,0.5);
             nubotpacket_.setRobotBallPossession(i+1,robot2coach_info_->RobotInfo_[i].getDribbleState());
@@ -52,25 +67,14 @@ void Coach2refbox::packWorldmodel_(Robot2coach_info *robot2coach_info_)
     {
         if(robot2coach_info_->BallInfo_[i].isLocationKnown())
         {
-            float confidence=0.001*(1000-(robot2coach_info_->RobotInfo_[i].getLocation().distance(robot2coach_info_->BallInfo_[i].getGlobalLocation())));
-            nubotpacket_.addBall(robot2coach_info_->BallInfo_[i].getGlobalLocation(),
-                                 robot2coach_info_->BallInfo_[i].getVelocity(),
-                                 confidence);
+            short distance=_robot_pos[i].distance(_ball_pos[i]);
+            nubotpacket_.addBall(_ball_pos[i],_ball_vel[i],0.001*(1000-distance));
         }
     }
 
     //Obstacles setters
-    for(int i=0;i<OUR_TEAM;i++)
-    {
-        if(robot2coach_info_->RobotInfo_[i].isValid())
-        {
-            for(int j=0;j<10;j++)
-            {
-                DPoint _point = robot2coach_info_->Obstacles_[i][j];
-                nubotpacket_.addObstacle(_point,DPoint(0,0));
-            }
-        }
-    }
+    for(int i=0;i<robot2coach_info_->Opponents_.size();i++)
+        nubotpacket_.addObstacle(_obstacles[i],DPoint2s(0,0));
 
     //ageMs setters
     nubotpacket_.setAgeMilliseconds(90);
@@ -80,7 +84,9 @@ void Coach2refbox::packWorldmodel_(Robot2coach_info *robot2coach_info_)
     QJsonDocument document;
     document.setObject(*nubotpacket_.jsonObject_);
     QByteArray byte_array = document.toJson(QJsonDocument::Compact);            //把这个用tcpip传上去
-    //qDebug()<<byte_array<<'\0';
+    std::string json=byte_array.data();
+    //qDebug()<<byte_array;
+    json_output<<json;
 }
 
 void Coach2refbox::cleanPacket_()

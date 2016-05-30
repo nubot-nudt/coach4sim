@@ -7,34 +7,6 @@ namespace nubot{
 
 const int THRES_ROBOT_VALID_CONST=15;
 
-/** 从Coach收到信息*/
-struct MessageFromCoach
-{
-    char Head;
-    char MatchMode; /** 比赛模式，如果*/
-    char MatchType;
-};
-
-
-template<typename _T> struct Point_
-{
-  _T x;
-  _T y;
-};
-
-typedef Point_<double>  Point2d;
-
-typedef Point2d Point;
-
-struct obs_info_zip
-{
-    double x,y;
-    double HRZ[4];
-    double HRH[4];
-};
-
-const int MAX_OBSTALCES_NUMS_CONST = 9;
-
 class Robot
 {
 
@@ -102,7 +74,6 @@ public:
     DPoint getLocation();
     Angle  getHead();
     DPoint getVelocity();
-    DPoint getAcc();
     double getW();
     bool   isKickoff();
     bool   isStuck();

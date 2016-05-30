@@ -47,12 +47,21 @@ int main(int argc, char **argv)
 {
     struct MessageFromCoach
     {
-        char Head;
-        char MatchMode; /** 比赛模式，如果*/
+        char MatchMode;          //比赛模式
         char MatchType;
+        char TestMode;           //测试模式
+        nubot::DPoint2s pointA;
+        nubot::DPoint2s pointB;
+        short angleA;
+        short angleB;
+        char id_A;
+        char id_B;
+        char kick_force;
+
     }coach2robot;
-    coach2robot.MatchMode=11;
+    coach2robot.MatchMode=12;
     coach2robot.MatchType=2;
+    coach2robot.TestMode=10;
 
     if(signal(SIGINT, signal_catch) == SIG_ERR)
     {
@@ -67,6 +76,7 @@ int main(int argc, char **argv)
     {
         if(DB_put(MESSAGEFROMCOACHINFO, &coach2robot) == -1)
         {
+            printf("Error registering signal handler");
             DB_free();
             return -1;
         }

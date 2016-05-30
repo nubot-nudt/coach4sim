@@ -51,8 +51,9 @@ public:
 typedef DPoint_<int>    DPoint2i;
 typedef DPoint_<float>  DPoint2f;
 typedef DPoint_<double> DPoint2d;
+typedef DPoint_<short>  DPoint2s;
 typedef DPoint2d DPoint;
-
+//ypedef DPoint2d DPoint2si;
 //////////////////////////////// Cartesian  Point ////////////////////////////////
 template<typename _Tp> inline DPoint_<_Tp>::DPoint_() : x_(0), y_(0) {}
 template<typename _Tp> template<typename _Tp2> inline DPoint_<_Tp>::DPoint_(_Tp2 _x, _Tp2 _y) : x_(_Tp(_x)), y_(_Tp(_y)) {}

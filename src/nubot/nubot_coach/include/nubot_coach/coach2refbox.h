@@ -19,6 +19,15 @@ public:
     Packet2refbox nubotpacket_;
     QString actions_[13];
     int  jsonSize;
+
+    //简化上传数据
+    DPoint2s _robot_pos[OUR_TEAM];
+    DPoint2s _robot_vel[OUR_TEAM];
+    DPoint2s _robot_target[OUR_TEAM];
+    short _robot_ori[OUR_TEAM];
+    DPoint2s _ball_pos[OUR_TEAM];
+    DPoint2s _ball_vel[OUR_TEAM];
+    DPoint2s _obstacles[MAX_OBSNUMBER_CONST*2];
 };
 }
 

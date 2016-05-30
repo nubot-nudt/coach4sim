@@ -9,8 +9,7 @@
   rtdb_api.cpp中的std::string ini_config_file="/home/nubot8/coach_ws/src/nubot/world_model/config/rtdb.ini"中的nubot8
 4.结束整个coach时，需要关闭ui和ctrl+c；
 5.要修改RTBD的comm中的argv[1]参数，无线就是wlan0，有线就是eth0，当然如果插外置网卡再改；
-6.障碍物暂时没有显示;
-7.链接裁判盒用无线时，存在丢包，用有线时，未发现；
-10.当连接裁判盒时，所有按钮（空格可以STOP）都disabled；
-11.当coach用作仿真时，需要打开core.hpp中的#define SIMULATION；
-12.为了减少不必要的数据传输负担，对RTDB的comm做了小的修改，只接收和发送必要的信息；
+6.当连接裁判盒时，所有按钮（空格可以STOP）都disabled；
+7.当coach用作仿真时，需要打开core.hpp中的#define SIMULATION；
+8.为了减少不必要的数据传输负担，对RTDB的comm做了小的修改，只接收和发送必要的信息；
+9.编译时如果提示找不到Eigen，把worldmodel的CMakeList中的两处Eigen3改成Eigen（因为最新的ros没有Eigen）；

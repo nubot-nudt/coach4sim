@@ -37,19 +37,6 @@ void Robot2coach::update_info(const nubot_common::WorldModelInfo & _world_msg)
     }
 
     //更新单个机器人障碍物信息
-     //
-    /*for(int i = 0 ; i < OUR_TEAM ; i++)
-    {
-        if(robot2coach_info.RobotInfo_[i].isValid())
-        {
-            robot2coach_info.Obstacles_[i].clear();
-            //robot2coach_info.Obstacles_[i].resize(10);
-            for(nubot_common::Point2d point : _world_msg.obstacleinfo[i].pos )
-                robot2coach_info.Obstacles_[i].push_back(DPoint(point.x,point.y));
-        }
-
-    }*/
-
     for(int i = 0 ; i < OUR_TEAM ; i++)
         if(robot2coach_info.RobotInfo_[i].isValid())
             for(int j=0;j<MAX_OBSNUMBER_CONST;j++)
@@ -77,6 +64,18 @@ void Robot2coach::publish(const ros::TimerEvent &)
 {
     coachinfo_publish_info_.MatchMode=coach2robot_info.MatchMode;
     coachinfo_publish_info_.MatchType=coach2robot_info.MatchType;
+
+    coachinfo_publish_info_.TestMode=coach2robot_info.TestMode;
+    coachinfo_publish_info_.pointA.x=coach2robot_info.pointA.x_;
+    coachinfo_publish_info_.pointA.y=coach2robot_info.pointA.y_;
+    coachinfo_publish_info_.pointB.x=coach2robot_info.pointB.x_;
+    coachinfo_publish_info_.pointB.y=coach2robot_info.pointB.y_;
+    coachinfo_publish_info_.angleA=coach2robot_info.angleA;
+    coachinfo_publish_info_.angleB=coach2robot_info.angleB;
+    coachinfo_publish_info_.idA=coach2robot_info.id_A;
+    coachinfo_publish_info_.idB=coach2robot_info.id_B;
+    coachinfo_publish_info_.kickforce=coach2robot_info.kick_force;
+
     coach2robotinfo_pub_.publish(coachinfo_publish_info_);
 }
 void

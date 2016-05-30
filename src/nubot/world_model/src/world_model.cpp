@@ -39,12 +39,7 @@ nubot::World_Model::~World_Model()
 void
 nubot::World_Model::publish(const ros::TimerEvent &)
 {
-    /** 更新RTBD信息 */
-#ifdef SIMULATION
-    DB_get(1,TEAMMATESINFO_SIM, &teammatesinfo_sim_);                //认为Agent1为仿真的我方机器人，后面要改就改
-    for(int i=0;i<OUR_TEAM;i++)
-        teammatesinfo_[i]=teammatesinfo_sim_.teammatesinfo_sim[i];
-#else
+    // 更新RTBD信息
     for(std::size_t i = 0 ; i< OUR_TEAM ; i++)
     {
 
@@ -53,9 +48,8 @@ nubot::World_Model::publish(const ros::TimerEvent &)
         teammatesinfo_[i].robot_info_.setlifetime(ltime);
         teammatesinfo_[i].ball_info_.setlifetime(ltime);
     }
-#endif
 
-    /** 发布机器人信息 */
+    // 发布机器人信息
     world_model_info_.robotinfo.clear();
     world_model_info_.robotinfo.resize(OUR_TEAM);
     for(std::size_t i = 0 ; i< OUR_TEAM ; i++)
@@ -77,11 +71,11 @@ nubot::World_Model::publish(const ros::TimerEvent &)
         world_model_info_.robotinfo[i].target.x = robot_info.getTarget().x_;
         world_model_info_.robotinfo[i].target.y = robot_info.getTarget().y_;
         world_model_info_.robotinfo[i].isdribble = robot_info.getDribbleState();
-        if(robot_info.getlifetime()>5000)
+        if(robot_info.getlifetime()>NOT_DATAUPDATE)
              world_model_info_.robotinfo[i].isvalid = false;    //如果太长时间没有受到信息更新，则判断下场，避免程序突然挂掉后还显示
     }
 
-    /** 将通信得到的障碍物信息写入并融合 */
+    // 将通信得到的障碍物信息写入并融合
     for(std::size_t i = 0 ; i< OUR_TEAM ; i++)
     {
         std::vector<ObstacleObject> obs_info;
@@ -98,8 +92,8 @@ nubot::World_Model::publish(const ros::TimerEvent &)
     }
     obstacles_.update();
 
-    /** 发布障碍物的信息*/
-    /** 单个机器人看到的障碍物，填充到obstacleinfo中 */
+    // 发布障碍物的信息
+    // 单个机器人看到的障碍物，填充到obstacleinfo中
     for(std::size_t i = 0 ; i< OUR_TEAM ; i++)
     {    
         world_model_info_.obstacleinfo[i].pos.clear();
@@ -111,7 +105,7 @@ nubot::World_Model::publish(const ros::TimerEvent &)
                 world_model_info_.obstacleinfo[i].pos[j].y=teammatesinfo_[i].obs_info_[j].getLocation().y_;
             }
     }
-    /** 多个机器人融合后的障碍物，填充到oppinfo中 */
+    // 多个机器人融合后的障碍物，填充到oppinfo中
     std::vector< DPoint > opptracker;
     obstacles_.getFuseObsTracker(opptracker);
     world_model_info_.oppinfo.pos.clear();
@@ -124,7 +118,7 @@ nubot::World_Model::publish(const ros::TimerEvent &)
         world_model_info_.oppinfo.pos[i]= point;
     }
 
-    /** 发布球的信息 */
+    // 发布球的信息
     world_model_info_.ballinfo.clear();
     world_model_info_.ballinfo.resize(OUR_TEAM);
     for(std::size_t i = 0 ; i< OUR_TEAM ; i++)
@@ -139,11 +133,11 @@ nubot::World_Model::publish(const ros::TimerEvent &)
         world_model_info_.ballinfo[i].velocity.y = ball_info.getVelocity().y_;
         world_model_info_.ballinfo[i].velocity_known = ball_info.isVelocityKnown();
         world_model_info_.ballinfo[i].pos_known      = ball_info.isLocationKnown();
-        if(ball_info.getlifetime()>5000)
+        if(ball_info.getlifetime()>NOT_DATAUPDATE)
             world_model_info_.ballinfo[i].pos_known = false;    //如果太长时间没有受到信息更新，则判断下场，避免程序突然挂掉后还显示
     }
 
-    /**  发布传球信息*/
+    //  发布传球信息
     world_model_info_.pass_cmd.catch_id = -1;
     world_model_info_.pass_cmd.pass_id = -1;
     world_model_info_.pass_cmd.is_dynamic_pass  = false;
@@ -174,6 +168,18 @@ void World_Model::updateCoach_info(const nubot_common::CoachInfo &_coach_msg)
 {
     coach_info_.MatchMode=_coach_msg.MatchMode;
     coach_info_.MatchType=_coach_msg.MatchType;
+
+    coach_info_.TestMode=_coach_msg.TestMode;
+    coach_info_.pointA.x_=_coach_msg.pointA.x;
+    coach_info_.pointA.y_=_coach_msg.pointA.y;
+    coach_info_.pointB.x_=_coach_msg.pointB.x;
+    coach_info_.pointB.y_=_coach_msg.pointB.y;
+    coach_info_.angleA=_coach_msg.angleA;
+    coach_info_.angleB=_coach_msg.angleB;
+    coach_info_.id_A=_coach_msg.idA;
+    coach_info_.id_B=_coach_msg.idB;
+    coach_info_.kick_force=_coach_msg.kickforce;
+
     if(DB_put(MESSAGEFROMCOACHINFO, &coach_info_) == -1)
     {
         DB_free();
