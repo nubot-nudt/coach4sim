@@ -77,24 +77,31 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     robot_img_[2].load("../../../src/nubot/nubot_coach/source/NUM3.png");
     robot_img_[3].load("../../../src/nubot/nubot_coach/source/NUM4.png");
     robot_img_[4].load("../../../src/nubot/nubot_coach/source/NUM5.png");
+    obs_img_[0].load("../../../src/nubot/nubot_coach/source/obstacles_1.png");
+    obs_img_[1].load("../../../src/nubot/nubot_coach/source/obstacles_2.png");
+    obs_img_[2].load("../../../src/nubot/nubot_coach/source/obstacles_3.png");
+    obs_img_[3].load("../../../src/nubot/nubot_coach/source/obstacles_4.png");
+    obs_img_[4].load("../../../src/nubot/nubot_coach/source/obstacles_5.png");
     ball_img_.load("../../../src/nubot/nubot_coach/source/ball.png");
-    obs_img_.load("../../../src/nubot/nubot_coach/source/obstacles.png");
 
     for(int i=0;i<OUR_TEAM;i++)
+    {
         robot_img_[i]=robot_img_[i].scaled(30,30);
+        obs_img_[i]=obs_img_[i].scaled(30,30);
+    }
     ball_img_=ball_img_.scaled(20,20);
-    obs_img_=obs_img_.scaled(30,30);
 
     field_=scene_->addPixmap(field_img_init_);             //载入初始化球场
     scene_->setSceneRect(0,0,700,467);                     //固定显示区域
 
-    for(int i=0;i<MAX_OBSNUMBER_CONST*2;i++)
-    {
-        obstacle_[i]=scene_->addPixmap(obs_img_);                 //载入障碍物
-        obstacle_[i]->setPos(900,900);                            //初始位置放到(900,900),不出现在视野里
-    }
+    for(int i=0;i<OUR_TEAM;i++)
+        for(int j=0;j<MAX_OBSNUMBER_CONST;j++)
+        {
+            obstacle_[i][j]=scene_->addPixmap(obs_img_[i]);                 //载入障碍物
+            obstacle_[i][j]->setPos(900,900);                               //初始位置放到(900,900),不出现在视野里
+        }
 
-    role_[0]=scene_->addText("GOALIE");
+    role_[0]=scene_->addText("GOALIE");                    //载入角色item
     role_[1]=scene_->addText("ACTIVE");
     role_[2]=scene_->addText("PASSIVE");
     role_[3]=scene_->addText("MIDFIELD");
@@ -117,6 +124,7 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     isObs_display_=false;
     isConnect_RefBox_=false;
 
+    display_choice_=0;
     isAtHome_=0;
     teamflag_=0;
     score_cyan_=0;
@@ -157,15 +165,9 @@ void Dialog::paintEvent(QPaintEvent *event)
         //绘制融合后的障碍物
         if(isObs_display_)
             for(int i=0;i<OUR_TEAM;i++)
-            {
                 if(robot2coach_info_->RobotInfo_[i].isValid())     //存在任意一个机器人在场
-                {
-                    if(robot2coach_info_->Opponents_.size())
-                        for(int i=0;i<robot2coach_info_->Opponents_.size();i++)
-                            obstacle_[i]->setPos(groundflag_*_obstacles[i].x_*WIDTH+335,-groundflag_*_obstacles[i].y_*HEIGHT+218.5);
-                    break;
-                }
-            }
+                    for(int j=0;j<MAX_OBSNUMBER_CONST;j++)
+                        obstacle_[i][j]->setPos(groundflag_*_obstacles[i][j].x_*WIDTH+335,-groundflag_*_obstacles[i][j].y_*HEIGHT+218.5);
     }
     else
     {
@@ -188,9 +190,9 @@ void Dialog::paintEvent(QPaintEvent *event)
             }
             //绘制当前机器人识别的障碍物
             if(isObs_display_)
-                for(int j=0;j<robot2coach_info_->Obstacles_.size();j++)
-                    obstacle_[j]->setPos(groundflag_*robot2coach_info_->Obstacles_[display_choice_-1][j].x_*WIDTH+335,
-                                         -groundflag_*robot2coach_info_->Obstacles_[display_choice_-1][j].y_*HEIGHT+218.5);
+                for(int j=0;j<MAX_OBSNUMBER_CONST;j++)
+                    obstacle_[display_choice_-1][j]->setPos(groundflag_*_obstacles[display_choice_-1][j].x_*WIDTH+335,
+                                                            -groundflag_*_obstacles[display_choice_-1][j].y_*HEIGHT+218.5);
         }
     }
 }
@@ -223,8 +225,9 @@ void Dialog::timerUpdate()
         _ball_pos[i]=robot2coach_info_->BallInfo_[i].getGlobalLocation();
         _ball_vel[i]=robot2coach_info_->BallInfo_[i].getVelocity();
     }
-    for(int i=0;i<robot2coach_info_->Opponents_.size();i++)
-        _obstacles[i]=robot2coach_info_->Opponents_[i];
+    for(int i=0;i<OUR_TEAM;i++)
+        for(int j=0;j<MAX_OBSNUMBER_CONST;j++)
+            _obstacles[i][j]=robot2coach_info_->Obstacles_[i][j];
 
     update();                                             //重绘
     showRobot_info_();                                    //更新显示信息
@@ -1106,13 +1109,13 @@ void Dialog::buttonDelay_()              //每隔450ms按钮复位
 
 void Dialog::restItems_()
 {
-    ball_->setPos(900,900);
+    ball_->setPos(900,900);                             //初始位置放到(900,900),不出现在视野里
     for(int i=0;i<OUR_TEAM;i++)
     {
         robot_[i]->setPos(900,900);
         role_[i]->setPos(900,900);
-    }
-    for(int i=0;i<MAX_OBSNUMBER_CONST*2;i++)
-        obstacle_[i]->setPos(900,900);                            //初始位置放到(900,900),不出现在视野里
+        for(int j=0;j<MAX_OBSNUMBER_CONST;j++)
+            obstacle_[i][j]->setPos(900,900);
+    }                              
     velocity_->setLine(900,901,900,901);
 }

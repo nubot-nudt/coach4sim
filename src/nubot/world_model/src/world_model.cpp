@@ -101,8 +101,8 @@ nubot::World_Model::publish(const ros::TimerEvent &)
         if(teammatesinfo_[i].robot_info_.isValid())
             for(int j=0; j<MAX_OBSNUMBER_CONST; j++)
             {
-                world_model_info_.obstacleinfo[i].pos[j].x=teammatesinfo_[i].obs_info_[j].getLocation().x_;
-                world_model_info_.obstacleinfo[i].pos[j].y=teammatesinfo_[i].obs_info_[j].getLocation().y_;
+                world_model_info_.obstacleinfo[i].pos[j].x=teammatesinfo_[i].obs_fuse_[j].x_;
+                world_model_info_.obstacleinfo[i].pos[j].y=teammatesinfo_[i].obs_fuse_[j].y_;
             }
     }
     // 多个机器人融合后的障碍物，填充到oppinfo中
