@@ -53,7 +53,7 @@ public:
     BallObject     ball_info_;
     ObstacleObject obs_info_[MAX_OBSNUMBER_CONST];
     PassCommands   pass_cmds_;
-    //DPoint2s       obs_single_[OUR_TEAM][MAX_OBSNUMBER_CONST];               //用于测试障碍物融合效果
+    //DPoint2s       obs_single_[OUR_TEAM][MAX_OBSNUMBER_CONST];               //用于测试世界模型一致性效果
 };
 
 

@@ -14,10 +14,10 @@ namespace nubot {
 typedef struct
 {
     quint8  robotId;
-    DPoint2s  pose;
-    short   orien;
-    DPoint2s  velocity;
-    DPoint2s  targetPose;
+    DPoint2f  pose;
+    float   orien;
+    DPoint2f  velocity;
+    DPoint2f  targetPose;
     QString intention;
     float   batteryLevel;
     bool    hasBall;
@@ -26,16 +26,16 @@ typedef std::vector<robotStructure> robotList;
 
 typedef struct
 {
-    DPoint2s position;
-    DPoint2s velocity;
+    DPoint2f position;
+    DPoint2f velocity;
     float  confidence;
 } ballStructure;
 typedef std::vector<ballStructure> ballList;
 
 typedef struct
 {
-    DPoint2s position;
-    DPoint2s velocity;
+    DPoint2f position;
+    DPoint2f velocity;
     float    radius;
     float    confidence;
 } obstacleStructure;
@@ -68,18 +68,18 @@ public:
     void setTeamIntention(const QString intention);
 
     //Robot level setters
-    void setRobotPose(const quint8 robotId, const DPoint2s pose, const short orien);
-    void setRobotTargetPose(const quint8 robotId, const DPoint2s targetpose);
-    void setRobotVelocity(const quint8 robotId, const DPoint2s velocity);
+    void setRobotPose(const quint8 robotId, const DPoint2f pose, const float orien);
+    void setRobotTargetPose(const quint8 robotId, const DPoint2f targetpose);
+    void setRobotVelocity(const quint8 robotId, const DPoint2f velocity);
     void setRobotIntention(const quint8 robotId, const QString intention);
     void setRobotBatteryLevel(const quint8 robotId, const float level);
     void setRobotBallPossession(const quint8 robotId, const bool hasBall);
 
     //Ball setters
-    void addBall(const DPoint2s position, const DPoint2s velocity, const float confidence);
+    void addBall(const DPoint2f position, const DPoint2f velocity, const float confidence);
 
     //Obstacle setters
-    void addObstacle(const DPoint2s position, const DPoint2s velocity);
+    void addObstacle(const DPoint2f position, const DPoint2f velocity);
 
     //Global setters
     void setAgeMilliseconds(const double age=90);

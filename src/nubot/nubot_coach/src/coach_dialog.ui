@@ -242,7 +242,7 @@
        <enum>Qt::NoFocus</enum>
       </property>
       <property name="text">
-       <string>atHome</string>
+       <string>AtHome</string>
       </property>
      </widget>
     </item>
@@ -719,12 +719,12 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="cancel">
+       <widget class="QPushButton" name="park">
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="text">
-         <string>Cancel</string>
+         <string>Park</string>
         </property>
        </widget>
       </item>
@@ -774,9 +774,9 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>280</y>
-       <width>131</width>
-       <height>41</height>
+       <y>330</y>
+       <width>101</width>
+       <height>71</height>
       </rect>
      </property>
      <property name="focusPolicy">
@@ -923,117 +923,6 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="gridLayoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>170</y>
-       <width>334</width>
-       <height>101</height>
-      </rect>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetDefaultConstraint</enum>
-      </property>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="shoot_mode">
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="text">
-         <string>Shoot</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="pass_mode">
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="text">
-         <string>Pass</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QLineEdit" name="shoot_force">
-        <property name="focusPolicy">
-         <enum>Qt::ClickFocus</enum>
-        </property>
-        <property name="maxLength">
-         <number>2</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="test_state">
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="text">
-         <string>Test State</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="catch_mode">
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="text">
-         <string>Catch</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="4">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QPushButton" name="move_mode">
-          <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
-          </property>
-          <property name="text">
-           <string>Move</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="isdribble">
-          <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
-          </property>
-          <property name="text">
-           <string>isDribble</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="isavoidobs">
-          <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
-          </property>
-          <property name="text">
-           <string>isAvoidObs</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="2" column="1" colspan="3">
-       <widget class="QTextBrowser" name="teststate_dis">
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
     <widget class="QPushButton" name="test_stop">
      <property name="geometry">
       <rect>
@@ -1053,10 +942,10 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     <widget class="QPushButton" name="circle_test">
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>280</y>
-       <width>181</width>
-       <height>41</height>
+       <x>120</x>
+       <y>330</y>
+       <width>81</width>
+       <height>71</height>
       </rect>
      </property>
      <property name="focusPolicy">
@@ -1066,17 +955,266 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
       <string>Circle Test</string>
      </property>
     </widget>
-    <widget class="QLabel" name="tips">
+    <widget class="QPushButton" name="shoot_mode">
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>320</y>
-       <width>181</width>
+       <x>10</x>
+       <y>250</y>
+       <width>81</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>Shoot</string>
+     </property>
+    </widget>
+    <widget class="QTextBrowser" name="teststate_dis">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>410</y>
+       <width>231</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="test_state">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>410</y>
+       <width>81</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="text">
+      <string>Test State</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pass_mode">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>170</y>
+       <width>91</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>Pass</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="catch_mode">
+     <property name="geometry">
+      <rect>
+       <x>242</x>
+       <y>170</y>
+       <width>101</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>Catch</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="isdribble">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>220</y>
+       <width>121</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>isDribble</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="isavoidobs">
+     <property name="geometry">
+      <rect>
+       <x>201</x>
+       <y>220</y>
+       <width>141</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>isAvoidObs</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="move_mode">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>170</y>
+       <width>101</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>Move</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="target">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>250</y>
+       <width>51</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;AngleA=Vx, AngleB=radius&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>Target</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="target_y">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>250</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::ClickFocus</enum>
+     </property>
+     <property name="maxLength">
+      <number>4</number>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="target_x">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>250</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::ClickFocus</enum>
+     </property>
+     <property name="maxLength">
+      <number>4</number>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="shoot_force">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>286</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::ClickFocus</enum>
+     </property>
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="force_in">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>290</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Shoot force</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="circle_radius">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>330</y>
+       <width>71</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::ClickFocus</enum>
+     </property>
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="circle_vel">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>370</y>
+       <width>71</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::ClickFocus</enum>
+     </property>
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="radius_in">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>330</y>
+       <width>51</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>radius</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="vel_in">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>370</y>
+       <width>61</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>velocity</string>
      </property>
     </widget>
    </widget>

@@ -12,7 +12,6 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
 
     QTimer *timer=new QTimer(this);
     tcpSocket_=new QTcpSocket(this);
-    tcpUpload_=new QTcpSocket(this);
 
     QByteArray *buffer = new QByteArray();
     qint32 *s = new qint32(0);
@@ -47,6 +46,16 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     ui->angleAin->setValidator(new QIntValidator(-180,180,ui->angleAin));
     ui->angleBin->setText("0");
     ui->angleBin->setValidator(new QIntValidator(-180,180,ui->angleBin));
+
+    ui->circle_radius->setText("0");
+    ui->circle_radius->setValidator(new QIntValidator(0,500,ui->circle_radius));
+    ui->circle_vel->setText("0");
+    ui->circle_vel->setValidator(new QIntValidator(0,500,ui->circle_vel));
+
+    ui->target_x->setText("0");
+    ui->target_x->setValidator(new QIntValidator(-900,900,ui->target_x));
+    ui->target_y->setText("0");
+    ui->target_y->setValidator(new QIntValidator(-600,600,ui->target_y));
 
     ui->shoot_force->setText("0");
     ui->shoot_force->setValidator(new QIntValidator(0,50,ui->shoot_force));
@@ -231,13 +240,13 @@ void Dialog::timerUpdate()
         else
             count++;
     }
-    if(isUpload_worldmodel_)                                 //采用循环降低频率，不用重新写定时函数
+    if(isUpload_worldmodel_&&isConnect_RefBox_)              //采用循环降低频率，不用重新写定时函数
     {
         static int count1=0;
         if(count1==2)                                        //90ms一次
         {
             coach2refebox_->packWorldmodel_(robot2coach_info_);
-            tcpUpload_->write(coach2refebox_->upload_array_);
+            tcpSocket_->write(coach2refebox_->upload_array_);
             count1=0;
         }
         else
@@ -403,9 +412,10 @@ void Dialog::on_dropball_clicked()
     ui->currentState->setText("DROPBALL");
 }
 
-void Dialog::on_cancel_clicked()
+void Dialog::on_park_clicked()
 {
-    ui->currentState->setText("CANCEL");
+    coach2robot_info_->MatchMode=PARKINGROBOT;
+    ui->currentState->setText("PARK ROBOT");
 }
 
 void Dialog::on_test_mode_clicked()
@@ -441,21 +451,36 @@ void Dialog::on_test_stop_clicked()
 
 void Dialog::on_location_test_clicked()
 {
+    if(coach2robot_info_->MatchMode!=TEST)
+    {
+        QMessageBox::information(this,"Notice","Click The TestMode at first",QMessageBox::Ok,QMessageBox::Ok);
+        return;
+    }
     coach2robot_info_->TestMode=Location_test;
     ui->teststate_dis->setText("Location Test");
 }
 
 void Dialog::on_circle_test_clicked()
 {
+    if(coach2robot_info_->MatchMode!=TEST)
+    {
+        QMessageBox::information(this,"Notice","Click The TestMode at first",QMessageBox::Ok,QMessageBox::Ok);
+        return;
+    }
     coach2robot_info_->TestMode=Circle_test;
     ui->teststate_dis->setText("Circle Test");
 
-    coach2robot_info_->angleA=ui->angleAin->text().toInt();
-    coach2robot_info_->angleB=ui->angleBin->text().toInt();
+    coach2robot_info_->angleA=ui->circle_vel->text().toShort();
+    coach2robot_info_->angleB=ui->circle_radius->text().toShort();
 }
 
 void Dialog::on_move_mode_clicked()
 {
+    if(coach2robot_info_->MatchMode!=TEST)
+    {
+        QMessageBox::information(this,"Notice","Click The TestMode at first",QMessageBox::Ok,QMessageBox::Ok);
+        return;
+    }
     bool _isDribble=ui->isdribble->checkState();
     bool _isAvoid=ui->isavoidobs->checkState();
     if(!_isDribble && !_isAvoid)
@@ -484,12 +509,17 @@ void Dialog::on_move_mode_clicked()
     coach2robot_info_->pointA.y_=ui->pointAin_Y->text().toShort();
     coach2robot_info_->pointB.x_=ui->pointBin_X->text().toShort();
     coach2robot_info_->pointB.y_=ui->pointBin_Y->text().toShort();
-    coach2robot_info_->angleA=ui->angleAin->text().toInt();
-    coach2robot_info_->angleB=ui->angleBin->text().toInt();
+    coach2robot_info_->angleA=ui->angleAin->text().toShort();
+    coach2robot_info_->angleB=ui->angleBin->text().toShort();
 }
 
 void Dialog::on_pass_mode_clicked()
 {
+    if(coach2robot_info_->MatchMode!=TEST)
+    {
+        QMessageBox::information(this,"Notice","Click The TestMode at first",QMessageBox::Ok,QMessageBox::Ok);
+        return;
+    }
     coach2robot_info_->TestMode=Pass_Ball;
     ui->teststate_dis->setText("Pass Mode");
 
@@ -503,6 +533,11 @@ void Dialog::on_pass_mode_clicked()
 
 void Dialog::on_catch_mode_clicked()
 {
+    if(coach2robot_info_->MatchMode!=TEST)
+    {
+        QMessageBox::information(this,"Notice","Click The TestMode at first",QMessageBox::Ok,QMessageBox::Ok);
+        return;
+    }
     coach2robot_info_->TestMode=Catch_Ball;
     ui->teststate_dis->setText("Catch Ball");
     coach2robot_info_->id_A=ui->agentA_ID->text().data()->toLatin1()-48;
@@ -510,13 +545,16 @@ void Dialog::on_catch_mode_clicked()
 
 void Dialog::on_shoot_mode_clicked()
 {
+    if(coach2robot_info_->MatchMode!=TEST)
+    {
+        QMessageBox::information(this,"Notice","Click The TestMode at first",QMessageBox::Ok,QMessageBox::Ok);
+        return;
+    }
     coach2robot_info_->TestMode=Shoot_Ball;
     ui->teststate_dis->setText("Shoot Mode");
-    coach2robot_info_->id_A=ui->agentA_ID->text().data()->toLatin1();
-    coach2robot_info_->pointA.x_=ui->pointAin_X->text().toShort();
-    coach2robot_info_->pointA.y_=ui->pointAin_Y->text().toShort();
-    coach2robot_info_->pointB.x_=ui->pointBin_X->text().toShort();
-    coach2robot_info_->pointB.y_=ui->pointBin_Y->text().toShort();
+    coach2robot_info_->id_A=ui->agentA_ID->text().data()->toLatin1()-48;
+    coach2robot_info_->pointB.x_=ui->target_x->text().toShort();
+    coach2robot_info_->pointB.y_=ui->target_y->text().toShort();
     coach2robot_info_->kick_force=ui->shoot_force->text().data()->toLatin1()-48;
 }
 
@@ -557,6 +595,11 @@ void Dialog::on_connectRefe_clicked()
         connect(tcpSocket_, SIGNAL(readyRead()), this, SLOT(OnReceive_()));    //tcp/ip通信时用到的槽函数
         ui->connectRefe->setText("disconnect");
         isConnect_RefBox_=true;
+
+        coach2robot_info_->MatchMode=STOPROBOT;                    //连接裁判盒时，置位比赛模式，放置机器人乱跑
+        coach2robot_info_->MatchType=STOPROBOT;
+        ui->currentState->setText("STOP ROBOT");
+
         qDebug()<<"RefBox_Connected";
         disableButton_();
     }
@@ -564,16 +607,19 @@ void Dialog::on_connectRefe_clicked()
     {
         tcpSocket_->disconnectFromHost();
         disconnect(tcpSocket_, SIGNAL(readyRead()), this, SLOT(OnReceive_()));
-        ui->connectRefe->setText("connect");
+        ui->connectRefe->setText("connect");                //断开链接的同时停止上传
+        ui->upload->setText("UPLOAD");
         isConnect_RefBox_=false;
+        isUpload_worldmodel_=false;
         qDebug()<<"RefBox_Disconnected";
+        qDebug()<<"Stop_upload";
         enableButton_();
     }
 }
 
 void Dialog::on_upload_clicked()
 {
-    if(!isUpload_worldmodel_)
+    if(!isUpload_worldmodel_&&isConnect_RefBox_)
     {
         ui->upload->setText("STOPUP");
         isUpload_worldmodel_=true;
@@ -581,6 +627,8 @@ void Dialog::on_upload_clicked()
     }
     else
     {
+        if(!isConnect_RefBox_)
+            QMessageBox::information(this,"Notice","Connect RefBox at first",QMessageBox::Ok,QMessageBox::Ok);
         ui->upload->setText("UPLOAD");
         isUpload_worldmodel_=false;
         qDebug()<<"Stop_upload";
@@ -957,7 +1005,7 @@ void Dialog::disableButton_()
     ui->throwin_opp->setEnabled(false);
     ui->freekick_opp->setEnabled(false);
     ui->goalkick_opp->setEnabled(false);
-    ui->cancel->setEnabled(false);
+    ui->park->setEnabled(false);
     ui->kickoff->setEnabled(false);
     ui->penalty->setEnabled(false);
     ui->corner->setEnabled(false);
@@ -967,6 +1015,7 @@ void Dialog::disableButton_()
     ui->dropball->setEnabled(false);
     ui->startButton->setEnabled(false);
     ui->stopButton->setEnabled(false);
+    ui->test_mode->setEnabled(false);
 }
 
 void Dialog::enableButton_()
@@ -977,7 +1026,7 @@ void Dialog::enableButton_()
     ui->throwin_opp->setEnabled(true);
     ui->freekick_opp->setEnabled(true);
     ui->goalkick_opp->setEnabled(true);
-    ui->cancel->setEnabled(true);
+    ui->park->setEnabled(true);
     ui->kickoff->setEnabled(true);
     ui->penalty->setEnabled(true);
     ui->corner->setEnabled(true);
@@ -987,6 +1036,7 @@ void Dialog::enableButton_()
     ui->dropball->setEnabled(true);
     ui->startButton->setEnabled(true);
     ui->stopButton->setEnabled(true);
+    ui->test_mode->setEnabled(true);
 }
 
 //接收jason的响应函数
@@ -1026,8 +1076,19 @@ void Dialog::OnReceive_()
 //返回链接错误
 void Dialog::displayError_(QAbstractSocket::SocketError)
 {
-    qDebug()<<tcpSocket_->errorString();
+    QString error = tcpSocket_->errorString();
+    QMessageBox::information(this,"Notice",error,QMessageBox::Ok,QMessageBox::Ok);
     tcpSocket_->close();
+
+    ui->connectRefe->setText("connect");                //断开链接的同时停止上传
+    ui->upload->setText("UPLOAD");
+    isConnect_RefBox_=false;
+    isUpload_worldmodel_=false;
+
+
+    qDebug()<<"RefBox_Disconnected";
+    qDebug()<<"Stop_upload";
+    enableButton_();
 }
 
 //延时函数，目前没有用

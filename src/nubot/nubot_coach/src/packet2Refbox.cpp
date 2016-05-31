@@ -38,7 +38,7 @@ void Packet2refbox::setTeamIntention(const QString intention)
 }
 
 //Robot level setters
-void Packet2refbox::setRobotPose(const quint8 robotId, const DPoint2s pose, const short orien)
+void Packet2refbox::setRobotPose(const quint8 robotId, const DPoint2f pose, const float orien)
 {
     int index = 0;
     bool isFound = false;
@@ -60,7 +60,7 @@ void Packet2refbox::setRobotPose(const quint8 robotId, const DPoint2s pose, cons
     }
 }
 
-void Packet2refbox::setRobotTargetPose(const quint8 robotId, const DPoint2s targetpose)
+void Packet2refbox::setRobotTargetPose(const quint8 robotId, const DPoint2f targetpose)
 {
     int index = 0;
     bool isFound = false;
@@ -81,7 +81,7 @@ void Packet2refbox::setRobotTargetPose(const quint8 robotId, const DPoint2s targ
     }
 }
 
-void Packet2refbox::setRobotVelocity(const quint8 robotId, const DPoint2s velocity)
+void Packet2refbox::setRobotVelocity(const quint8 robotId, const DPoint2f velocity)
 {
     int index = 0;
     bool isFound = false;
@@ -170,7 +170,7 @@ void Packet2refbox::setRobotBallPossession(const quint8 robotId, const bool hasB
 }
 
 //Ball setters
-void Packet2refbox::addBall(const DPoint2s position, const DPoint2s velocity, const float confidence)
+void Packet2refbox::addBall(const DPoint2f position, const DPoint2f velocity, const float confidence)
 {
     ballStructure ball;
 
@@ -182,7 +182,7 @@ void Packet2refbox::addBall(const DPoint2s position, const DPoint2s velocity, co
 }
 
 //Obstacle setters
-void Packet2refbox::addObstacle(const DPoint2s position, const DPoint2s velocity)
+void Packet2refbox::addObstacle(const DPoint2f position, const DPoint2f velocity)
 {
     obstacleStructure obstacle;
 
@@ -231,9 +231,10 @@ void Packet2refbox::addRobot(const quint8 robotId)
     try
     {
         robot.robotId = robotId;
-        robot.pose = DPoint(0,0);
-        robot.velocity = DPoint(0,0);
-        robot.targetPose = DPoint(0,0);
+        robot.pose = DPoint2f(0,0);
+        robot.orien =0;
+        robot.velocity = DPoint2f(0,0);
+        robot.targetPose = DPoint2f(0,0);
         robot.intention = QString();
         robot.batteryLevel = 0.0;
         robot.hasBall = false;
@@ -272,7 +273,7 @@ void Packet2refbox::generateJSON()
 
         //Add team intention
         QJsonValue teamIntention=mPacket_.globalIntention_;
-        jsonObject_->insert("Intention",teamIntention);
+        jsonObject_->insert("intention",teamIntention);
 
         //Adding robots
         QJsonArray robots;
@@ -315,7 +316,11 @@ void Packet2refbox::addRobotsJSON(QJsonArray &array)
             QJsonArray pose;
             QJsonValue poseX=-robotIter->pose.y_;     //比赛规定的坐标跟我们有区别，纵坐标=横坐标，横坐标=-纵坐标
             QJsonValue poseY=robotIter->pose.x_;
-            QJsonValue posePhi=robotIter->orien+90;
+            QJsonValue posePhi=robotIter->orien;
+            /*if(robotIter->orien<M_PI/2)             //标准世界模型跟我们的x轴，y轴不同，但貌似角度并没有变化
+                posePhi=robotIter->orien+M_PI/2;
+            else
+                posePhi=robotIter->orien-3*M_PI/2;*/
             pose.append(poseX);
             pose.append(poseY);
             pose.append(posePhi);

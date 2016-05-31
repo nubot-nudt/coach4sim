@@ -34,12 +34,12 @@ void Coach2refbox::packWorldmodel_(Robot2coach_info *robot2coach_info_)
     //简化上传数据
     for(int i=0;i<OUR_TEAM;i++)
     {
-        _robot_pos[i]=robot2coach_info_->RobotInfo_[i].getLocation();
-        _robot_vel[i]=robot2coach_info_->RobotInfo_[i].getVelocity();
-        _robot_target[i]=robot2coach_info_->RobotInfo_[i].getTarget();
-        _robot_ori[i]=robot2coach_info_->RobotInfo_[i].getHead().degree();
-        _ball_pos[i]=robot2coach_info_->BallInfo_[i].getGlobalLocation();
-        _ball_vel[i]=robot2coach_info_->BallInfo_[i].getVelocity();
+        _robot_pos[i]=DPoint2f(robot2coach_info_->RobotInfo_[i].getLocation().x_/100,robot2coach_info_->RobotInfo_[i].getLocation().y_/100);
+        _robot_vel[i]=DPoint2f(robot2coach_info_->RobotInfo_[i].getVelocity().x_/100,robot2coach_info_->RobotInfo_[i].getVelocity().y_/100);
+        _robot_target[i]=DPoint2f(robot2coach_info_->RobotInfo_[i].getTarget().x_/100,robot2coach_info_->RobotInfo_[i].getTarget().y_/100);
+        _robot_ori[i]=robot2coach_info_->RobotInfo_[i].getHead().radian_;
+        _ball_pos[i]=DPoint2f(robot2coach_info_->BallInfo_[i].getGlobalLocation().x_/100,robot2coach_info_->BallInfo_[i].getGlobalLocation().y_/100);
+        _ball_vel[i]=DPoint2f(robot2coach_info_->BallInfo_[i].getVelocity().x_/100,robot2coach_info_->BallInfo_[i].getVelocity().y_/100);
     }
     for(int i=0;i<robot2coach_info_->Opponents_.size();i++)
         _obstacles[i]=robot2coach_info_->Opponents_[i];
@@ -74,7 +74,7 @@ void Coach2refbox::packWorldmodel_(Robot2coach_info *robot2coach_info_)
 
     //Obstacles setters
     for(int i=0;i<robot2coach_info_->Opponents_.size();i++)
-        nubotpacket_.addObstacle(_obstacles[i],DPoint2s(0,0));
+        nubotpacket_.addObstacle(_obstacles[i],DPoint2f(0,0));
 
     //ageMs setters
     nubotpacket_.setAgeMilliseconds(90);
@@ -84,9 +84,9 @@ void Coach2refbox::packWorldmodel_(Robot2coach_info *robot2coach_info_)
     QJsonDocument document;
     document.setObject(*nubotpacket_.jsonObject_);
     upload_array_ = document.toJson(QJsonDocument::Compact);            //把这个用tcpip传上去
-    //std::string json=upload_array_.data();
-    //qDebug()<<byte_array;
-    //json_output<<json;
+    upload_array_.append('\0');
+    std::string json=upload_array_.data();
+    json_output<<json;
 }
 
 void Coach2refbox::cleanPacket_()

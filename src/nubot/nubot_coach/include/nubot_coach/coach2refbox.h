@@ -21,14 +21,14 @@ public:
     QByteArray upload_array_;            //上传的数据
     int  jsonSize;
 
-    //简化上传数据
-    DPoint2s _robot_pos[OUR_TEAM];
-    DPoint2s _robot_vel[OUR_TEAM];
-    DPoint2s _robot_target[OUR_TEAM];
-    short _robot_ori[OUR_TEAM];
-    DPoint2s _ball_pos[OUR_TEAM];
-    DPoint2s _ball_vel[OUR_TEAM];
-    DPoint2s _obstacles[MAX_OBSNUMBER_CONST*2];
+    //简化换算上传数据
+    DPoint2f _robot_pos[OUR_TEAM];
+    DPoint2f _robot_vel[OUR_TEAM];
+    DPoint2f _robot_target[OUR_TEAM];
+    float _robot_ori[OUR_TEAM];
+    DPoint2f _ball_pos[OUR_TEAM];
+    DPoint2f _ball_vel[OUR_TEAM];
+    DPoint2f _obstacles[MAX_OBSNUMBER_CONST*2];
 };
 }
 
