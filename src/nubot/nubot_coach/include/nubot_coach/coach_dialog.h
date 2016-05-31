@@ -75,7 +75,6 @@ public:
     QGraphicsTextItem *role_[OUR_TEAM];
 
     QTcpSocket *tcpSocket_;
-    QTcpSocket *tcpUpload_;                        //用于上传的socket
     QHash<QTcpSocket*, QByteArray*> buffers;
     QHash<QTcpSocket*, qint32*> sizes;
 
@@ -136,7 +135,7 @@ private slots:
     void on_goalkick_clicked();
     void on_goalkick_opp_clicked();
     void on_dropball_clicked();
-    void on_cancel_clicked();
+    void on_park_clicked();
 
     void on_test_mode_clicked();
     void on_test_stop_clicked();
