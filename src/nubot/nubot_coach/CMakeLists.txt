@@ -3,7 +3,6 @@ project(nubot_coach)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
 set(CMAKE_BUILD_TYPE "Debug")
 #set(EXECUTABLE_OUTPUT_PATH  "${PROJECT_SOURCE_DIR}/bin")
-set(CMAKE_PREFIX_PATH  ${CMAKE_PREFIX_PATH} "/home/nubot8/Qt5.3.2/5.3/gcc_64/lib/cmake/Qt5Widgets/")
 #set(CMAKE_AUTOMOC ON)
 #set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

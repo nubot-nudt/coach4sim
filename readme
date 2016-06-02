@@ -4,10 +4,6 @@ Note:
 3.新电脑第一次用裁判盒时，需要修改一个权限：
   ﻿sudo gedit /etc/security/limits.conf
   *               -       rtprio          100
-3.需要修改三个路径，因为一开始的方便用的绝对路径
-　　parser中的CMakeLists.txt中的nubot8,其实如果不改rtdb的传输数据，不用重新生成头文件的话，不用改
-　　nubot_ws的CMakeLists.txt中的nubot8,不重新编译也不用改
-  rtdb_api.cpp中的std::string ini_config_file="/home/nubot8/coach_ws/src/nubot/world_model/config/rtdb.ini"中的nubot8
 4.结束整个coach时，需要关闭ui和ctrl+c；
 5.要修改RTBD的comm中的argv[1]参数，无线就是wlan0，有线就是eth0，当然如果插外置网卡再改；
 6.当连接裁判盒时，所有按钮（空格可以STOP）都disabled；

@@ -8,7 +8,7 @@ namespace nubot {
 class ObstacleObject{
 
 public:
-    ObstacleObject(DPoint _loc=DPoint(-10000,-10000),PPoint _polar=PPoint(Angle(0),10000));
+    ObstacleObject(DPoint2s _loc=DPoint2s(-10000,-10000),PPoint _polar=PPoint(Angle(0),10000));
     ObstacleObject(const ObstacleObject & _info);
     const ObstacleObject & operator=(const ObstacleObject & _info)
     {
@@ -17,12 +17,12 @@ public:
         return *this;
     }
     void clear();
-    void setLocation(DPoint _loc);
+    void setLocation(DPoint2s _loc);
     void setPolarLocation(PPoint _polar);
-    DPoint getLocation();
+    DPoint2s getLocation();
     PPoint getPolarLocation();
 private:
-    DPoint obstacle_loc_;
+    DPoint2s obstacle_loc_;
     PPoint obstacle_polar_;
 };
 
