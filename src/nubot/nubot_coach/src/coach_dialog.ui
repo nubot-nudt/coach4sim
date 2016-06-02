@@ -16,7 +16,7 @@
   <widget class="QPushButton" name="Score0_up">
    <property name="geometry">
     <rect>
-     <x>440</x>
+     <x>490</x>
      <y>10</y>
      <width>31</width>
      <height>31</height>
@@ -37,7 +37,7 @@
   <widget class="QPushButton" name="Score0_down">
    <property name="geometry">
     <rect>
-     <x>440</x>
+     <x>490</x>
      <y>40</y>
      <width>31</width>
      <height>31</height>
@@ -58,7 +58,7 @@
   <widget class="QPushButton" name="Score1_down">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>310</x>
      <y>40</y>
      <width>31</width>
      <height>31</height>
@@ -79,7 +79,7 @@
   <widget class="QPushButton" name="Score1_up">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>310</x>
      <y>10</y>
      <width>31</width>
      <height>31</height>
@@ -172,7 +172,7 @@
   <widget class="QSplitter" name="splitter">
    <property name="geometry">
     <rect>
-     <x>301</x>
+     <x>351</x>
      <y>11</y>
      <width>131</width>
      <height>61</height>
@@ -251,9 +251,9 @@
   <widget class="QPushButton" name="cyan">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>210</x>
      <y>10</y>
-     <width>101</width>
+     <width>91</width>
      <height>61</height>
     </rect>
    </property>
@@ -277,9 +277,9 @@ border:2px groove gray;border-radius:10px;padding:2px 4px;
   <widget class="QPushButton" name="magenta">
    <property name="geometry">
     <rect>
-     <x>480</x>
+     <x>530</x>
      <y>10</y>
-     <width>101</width>
+     <width>91</width>
      <height>61</height>
     </rect>
    </property>
@@ -303,26 +303,10 @@ background-color:rgb(245, 12, 198);border:2px groove gray;border-radius:10px;pad
     <string>Magenta</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="upload">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>20</y>
-     <width>91</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::NoFocus</enum>
-   </property>
-   <property name="text">
-    <string>UPLOAD</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="change_ground">
    <property name="geometry">
     <rect>
-     <x>630</x>
+     <x>640</x>
      <y>10</y>
      <width>61</width>
      <height>61</height>
@@ -425,22 +409,6 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
       </item>
      </layout>
     </widget>
-    <widget class="QPushButton" name="connectRefe">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>320</y>
-       <width>101</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="text">
-      <string>Connect</string>
-     </property>
-    </widget>
     <widget class="QWidget" name="layoutWidget_3">
      <property name="geometry">
       <rect>
@@ -516,9 +484,9 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     <widget class="QLabel" name="text_disply">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>60</x>
        <y>320</y>
-       <width>91</width>
+       <width>101</width>
        <height>31</height>
       </rect>
      </property>
@@ -529,9 +497,9 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     <widget class="QTextBrowser" name="currentState">
      <property name="geometry">
       <rect>
-       <x>220</x>
+       <x>170</x>
        <y>320</y>
-       <width>131</width>
+       <width>181</width>
        <height>31</height>
       </rect>
      </property>
@@ -1188,7 +1156,7 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
       <enum>Qt::ClickFocus</enum>
      </property>
      <property name="maxLength">
-      <number>3</number>
+      <number>4</number>
      </property>
     </widget>
     <widget class="QLabel" name="radius_in">
@@ -1229,6 +1197,59 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
     </rect>
    </property>
   </widget>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>178</width>
+     <height>63</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="1">
+     <widget class="QPushButton" name="connectRefe">
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string>Connect</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="upload">
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string>Upload</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="IP">
+        <property name="text">
+         <string>IP</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="IP_in">
+        <property name="focusPolicy">
+         <enum>Qt::ClickFocus</enum>
+        </property>
+        <property name="maxLength">
+         <number>15</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
   <zorder>layoutWidget</zorder>
   <zorder>layoutWidget</zorder>
   <zorder>splitter</zorder>
@@ -1239,10 +1260,10 @@ border-image: url(../../../src/nubot/nubot_coach/source/left2right.png)
   <zorder>all_show</zorder>
   <zorder>cyan</zorder>
   <zorder>magenta</zorder>
-  <zorder>upload</zorder>
   <zorder>change_ground</zorder>
   <zorder>tab_change</zorder>
   <zorder>display</zorder>
+  <zorder>gridLayoutWidget</zorder>
  </widget>
  <resources/>
  <connections/>

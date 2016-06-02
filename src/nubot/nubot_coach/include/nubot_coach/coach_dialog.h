@@ -64,13 +64,13 @@ public:
     QPixmap field_img_home_;                       //奥拓楼场地图像
     QPixmap robot_img_[OUR_TEAM];                  //机器人图像
     QPixmap ball_img_;                             //球图像
-    QPixmap obs_img_;                              //障碍物图像
+    QPixmap obs_img_[OUR_TEAM];                              //障碍物图像
 
     QGraphicsScene *scene_;
     QGraphicsPixmapItem *field_;                   //field item
     QGraphicsPixmapItem *ball_;                    //ball item
     QGraphicsPixmapItem *robot_[OUR_TEAM];         //robot item
-    QGraphicsPixmapItem *obstacle_[MAX_OBSNUMBER_CONST*2];      //obstacles item
+    QGraphicsPixmapItem *obstacle_[OUR_TEAM][MAX_OBSNUMBER_CONST];      //obstacles item
     QGraphicsLineItem *velocity_;                  //velocity item
     QGraphicsTextItem *role_[OUR_TEAM];
 
@@ -84,11 +84,11 @@ public:
     short _robot_ori[OUR_TEAM];
     nubot::DPoint2s _ball_pos[OUR_TEAM];
     nubot::DPoint2s _ball_vel[OUR_TEAM];
-    nubot::DPoint2s _obstacles[MAX_OBSNUMBER_CONST*2];
+    nubot::DPoint2s _obstacles[OUR_TEAM][MAX_OBSNUMBER_CONST];
 
 private:
     Ui::Dialog *ui;
-    int display_choice_=0;                            //用于显示的选择
+    int display_choice_;                              //用于显示的选择
     int score_cyan_;
     int score_magenta_;
 

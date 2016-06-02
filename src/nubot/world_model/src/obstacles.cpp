@@ -1,7 +1,7 @@
 #include "nubot/world_model/obstacles.h"
 #include "nubot/world_model/MTTracker.h"
 using namespace nubot;
-ObstacleObject::ObstacleObject(DPoint _loc,PPoint _polar)
+ObstacleObject::ObstacleObject(DPoint2s _loc,PPoint _polar)
 {
     obstacle_loc_  = _loc;
     obstacle_polar_= _polar;
@@ -12,16 +12,16 @@ ObstacleObject::ObstacleObject(const ObstacleObject & _info)
     obstacle_polar_ = _info.obstacle_polar_;
 }
 void
-ObstacleObject::setLocation(DPoint  _loc) { obstacle_loc_=_loc; }
+ObstacleObject::setLocation(DPoint2s  _loc) { obstacle_loc_=_loc; }
 void
 ObstacleObject::clear()
 {
-    obstacle_loc_   = DPoint(-10000,-10000);
+    obstacle_loc_   = DPoint2s(-10000,-10000);
     obstacle_polar_ = PPoint(Angle(0),10000);
 }
 void
 ObstacleObject::setPolarLocation(PPoint _polar) { obstacle_polar_=_polar;}
-DPoint
+DPoint2s
 ObstacleObject::getLocation() { return obstacle_loc_;}
 PPoint
 ObstacleObject::getPolarLocation() { return obstacle_polar_;}

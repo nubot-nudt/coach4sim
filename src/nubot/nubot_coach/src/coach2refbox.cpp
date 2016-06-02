@@ -42,7 +42,7 @@ void Coach2refbox::packWorldmodel_(Robot2coach_info *robot2coach_info_)
         _ball_vel[i]=DPoint2f(robot2coach_info_->BallInfo_[i].getVelocity().x_/100,robot2coach_info_->BallInfo_[i].getVelocity().y_/100);
     }
     for(int i=0;i<robot2coach_info_->Opponents_.size();i++)
-        _obstacles[i]=robot2coach_info_->Opponents_[i];
+        _obstacles[i]=DPoint2f(robot2coach_info_->Opponents_[i].x_/100,robot2coach_info_->Opponents_[i].y_/100);
 
     //Team level setters
     nubotpacket_.setTeamIntention(QString("active"));

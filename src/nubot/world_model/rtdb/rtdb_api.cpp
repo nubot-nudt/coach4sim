@@ -23,6 +23,7 @@
 
 
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
@@ -114,17 +115,12 @@ int read_configuration(RTDBconf_agents *conf)
 	int id, size, period;
 	char type;
 
-    int agent_number;
-    char * environment;
-    if((environment = getenv("AGENT"))==NULL)
-    {
-        PERR("this agent number is not read by robot");
-        return -1;
-    }
-    agent_number = atoi(environment);
+    char *buf;
+    buf=getenv("HOME");
     std::stringstream ss;
-    ss<<agent_number;
-    std::string ini_config_file="/home/nubot8/coach_ws/src/nubot/world_model/config/rtdb.ini";
+    ss<<buf;
+
+    std::string ini_config_file=""+ss.str()+"/coach_ws/src/nubot/world_model/config/rtdb.ini";
     if ((f_def = fopen(ini_config_file.c_str(), "r")) == NULL)
 	{
 		PERRNO("fopen");
