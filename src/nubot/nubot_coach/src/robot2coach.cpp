@@ -2,14 +2,22 @@
 
 using namespace nubot;
 
-Robot2coach::Robot2coach(ros::NodeHandle)
+Robot2coach::Robot2coach(char *argv[])
 {
     ros::Time::init();
     boost::shared_ptr<ros::NodeHandle> nh_;
+    #ifdef SIMULATION
+    std::string robot_name = argv[1];
+    nh_= boost::make_shared<ros::NodeHandle>(robot_name);
+    robot2coachinfo_sub_ = nh_->subscribe("/"+robot_name+"2/worldmodel/worldmodelinfo", 1, &Robot2coach::update_info,this);
+    coach2robotinfo_pub_ = nh_->advertise<nubot_common::CoachInfo>("receive_from_coach",30);
+    coachinfo_publish_timer_ = nh_->createTimer(ros::Duration(0.03),&Robot2coach::publish,this);
+    #else
     nh_= boost::make_shared<ros::NodeHandle>();
     robot2coachinfo_sub_ = nh_->subscribe("worldmodel/worldmodelinfo", 1, &Robot2coach::update_info,this);
     coach2robotinfo_pub_ = nh_->advertise<nubot_common::CoachInfo>("nubot_coach/coachinfo",30);
     coachinfo_publish_timer_ = nh_->createTimer(ros::Duration(0.03),&Robot2coach::publish,this);
+    #endif
 }
 Robot2coach::~Robot2coach()
 {

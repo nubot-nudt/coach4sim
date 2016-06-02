@@ -43,7 +43,7 @@ public:
     MessageFromCoach coach2robot_info;
 
 public:
-    Robot2coach(ros::NodeHandle);
+    Robot2coach(char *argv[]);
     void run();
     void update_info(const nubot_common::WorldModelInfo & _world_msg);
     void publish(const ros::TimerEvent &);

@@ -16,8 +16,9 @@ int main(int argc, char *argv[])
     ros::init(argc,argv,"nubot_coach_node");
     ros::Time::init();
     ROS_INFO("start coach process");
-    ros::NodeHandle node;
-    nubot::Robot2coach robot2coach(node);
+
+    //ros::NodeHandle node;
+    nubot::Robot2coach robot2coach(argv);
     Dialog w(robot2coach.robot2coach_info, robot2coach.coach2robot_info);
     w.show();
 
