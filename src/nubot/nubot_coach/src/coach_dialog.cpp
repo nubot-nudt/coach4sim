@@ -27,6 +27,13 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     ui->radioButton->setChecked(true);
     ui->display->setScene(scene_);
 
+    QRegExp rx("((2[0-4]//d|25[0-5]|[01]?//d//d?)//.){3}(2[0-4]//d|25[0-5]|[01]?//d//d?)");   //设置ip输入格式
+    QRegExpValidator v(rx, 0);
+
+    ui->IP_in->setValidator(&v);
+    ui->IP_in->setInputMask("000.00.0.0;0");
+    ui->IP_in->setText("172.16.1.2");
+
     ui->agentA_ID->setText("1");
     ui->agentA_ID->setValidator(new QIntValidator(1,5,ui->agentA_ID));           //设置输入范围
     ui->agentB_ID->setText("1");
@@ -50,7 +57,7 @@ Dialog::Dialog(nubot::Robot2coach_info & robot2coach, nubot::MessageFromCoach & 
     ui->circle_radius->setText("0");
     ui->circle_radius->setValidator(new QIntValidator(0,500,ui->circle_radius));
     ui->circle_vel->setText("0");
-    ui->circle_vel->setValidator(new QIntValidator(0,500,ui->circle_vel));
+    ui->circle_vel->setValidator(new QIntValidator(-500,500,ui->circle_vel));
 
     ui->target_x->setText("0");
     ui->target_x->setValidator(new QIntValidator(-900,900,ui->target_x));
@@ -590,13 +597,14 @@ void Dialog::on_connectRefe_clicked()
 {
     if(!isConnect_RefBox_)
     {
-        QString IP="172.16.1.2";
+        QString IP=ui->IP_in->text();
+        qDebug()<<IP;
         quint16 prot=28097;
         tcpSocket_->abort();
         tcpSocket_->connectToHost(IP,prot);
 
         connect(tcpSocket_, SIGNAL(readyRead()), this, SLOT(OnReceive_()));    //tcp/ip通信时用到的槽函数
-        ui->connectRefe->setText("disconnect");
+        ui->connectRefe->setText("Disconnect");
         isConnect_RefBox_=true;
 
         coach2robot_info_->MatchMode=STOPROBOT;                    //连接裁判盒时，置位比赛模式，放置机器人乱跑
@@ -610,8 +618,8 @@ void Dialog::on_connectRefe_clicked()
     {
         tcpSocket_->disconnectFromHost();
         disconnect(tcpSocket_, SIGNAL(readyRead()), this, SLOT(OnReceive_()));
-        ui->connectRefe->setText("connect");                //断开链接的同时停止上传
-        ui->upload->setText("UPLOAD");
+        ui->connectRefe->setText("Connect");                //断开链接的同时停止上传
+        ui->upload->setText("Upload");
         isConnect_RefBox_=false;
         isUpload_worldmodel_=false;
         qDebug()<<"RefBox_Disconnected";
@@ -624,7 +632,7 @@ void Dialog::on_upload_clicked()
 {
     if(!isUpload_worldmodel_&&isConnect_RefBox_)
     {
-        ui->upload->setText("STOPUP");
+        ui->upload->setText("StopUp");
         isUpload_worldmodel_=true;
         qDebug()<<"Upload_worldmodel";
     }
@@ -632,7 +640,7 @@ void Dialog::on_upload_clicked()
     {
         if(!isConnect_RefBox_)
             QMessageBox::information(this,"Notice","Connect RefBox at first",QMessageBox::Ok,QMessageBox::Ok);
-        ui->upload->setText("UPLOAD");
+        ui->upload->setText("Upload");
         isUpload_worldmodel_=false;
         qDebug()<<"Stop_upload";
     }
@@ -1083,8 +1091,8 @@ void Dialog::displayError_(QAbstractSocket::SocketError)
     QMessageBox::information(this,"Notice",error,QMessageBox::Ok,QMessageBox::Ok);
     tcpSocket_->close();
 
-    ui->connectRefe->setText("connect");                //断开链接的同时停止上传
-    ui->upload->setText("UPLOAD");
+    ui->connectRefe->setText("Connect");                //断开链接的同时停止上传
+    ui->upload->setText("Upload");
     isConnect_RefBox_=false;
     isUpload_worldmodel_=false;
 
