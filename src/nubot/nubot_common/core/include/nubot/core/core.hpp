@@ -8,7 +8,7 @@
 #include "PPoint.hpp"
 #include "Line.hpp"
 
-//#define  SIMULATION
+#define  SIMULATION
 #define  NET_TYPE "eth0"
 
 #ifdef  SIMULATION

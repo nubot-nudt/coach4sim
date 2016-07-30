@@ -21,7 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_srvs
 )
 
-find_package(Eigen3 REQUIRED)
+find_package(Eigen REQUIRED)
 find_package(Boost REQUIRED)
 
 find_package(Threads)
@@ -30,7 +30,7 @@ set(world_model_includes
                include
                ${catkin_INCLUDE_DIRS}
                ${Boost_INCLUDE_DIRS}
-               ${EIGEN3_INCLUDE_DIRS}
+               ${EIGEN_INCLUDE_DIRS}
                include/nubot/world_model
                include/nubot/rtdb
 )

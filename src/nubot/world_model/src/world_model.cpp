@@ -27,7 +27,9 @@ nubot::World_Model::World_Model(int argc,char** argv,const char * name)
     teammatesinfo_.resize(OUR_TEAM); //开辟内存空间；
     /** 当前仅仅传输五个机器人信息*/
     world_model_info_.robotinfo.resize(OUR_TEAM);
+    #ifndef SIMULATION
     world_model_info_.obstacleinfo.resize(OUR_TEAM);
+    #endif
     receive_coach_count_ = ros::Time::now();;
 }
 nubot::World_Model::~World_Model()
@@ -66,7 +68,9 @@ nubot::World_Model::publish(const ros::TimerEvent &)
         world_model_info_.robotinfo[i].isvalid    = robot_info.isValid();
         world_model_info_.robotinfo[i].vrot       = robot_info.getW();
         world_model_info_.robotinfo[i].current_role = robot_info.getCurrentRole();
-        world_model_info_.robotinfo[i].current_action= robot_info.getCurrentAction();;
+        #ifndef SIMULATION
+        world_model_info_.robotinfo[i].current_action= robot_info.getCurrentAction();
+        #endif
         world_model_info_.robotinfo[i].role_time =  robot_info.getRolePreserveTime();
         world_model_info_.robotinfo[i].target.x = robot_info.getTarget().x_;
         world_model_info_.robotinfo[i].target.y = robot_info.getTarget().y_;
@@ -92,6 +96,18 @@ nubot::World_Model::publish(const ros::TimerEvent &)
     }
     obstacles_.update();
 
+#ifdef SIMULATION
+    // 发布障碍物的信息
+    // 单个机器人看到的障碍物，填充到obstacleinfo中
+
+        world_model_info_.obstacleinfo.pos.clear();
+        world_model_info_.obstacleinfo.pos.resize(MAX_OBSNUMBER_CONST);
+        for(int j=0; j<MAX_OBSNUMBER_CONST; j++)
+        {
+            world_model_info_.obstacleinfo.pos[j].x=teammatesinfo_[1].obs_fuse_[j].x_;
+            world_model_info_.obstacleinfo.pos[j].y=teammatesinfo_[1].obs_fuse_[j].y_;
+        }
+#else
     // 发布障碍物的信息
     // 单个机器人看到的障碍物，填充到obstacleinfo中
     for(std::size_t i = 0 ; i< OUR_TEAM ; i++)
@@ -105,6 +121,7 @@ nubot::World_Model::publish(const ros::TimerEvent &)
                 world_model_info_.obstacleinfo[i].pos[j].y=teammatesinfo_[i].obs_fuse_[j].y_;
             }
     }
+#endif
     // 多个机器人融合后的障碍物，填充到oppinfo中
     std::vector< DPoint > opptracker;
     obstacles_.getFuseObsTracker(opptracker);

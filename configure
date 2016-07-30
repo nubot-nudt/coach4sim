@@ -3,3 +3,4 @@
 git update-index --assume-unchanged src/nubot/world_model/rtdb/comm.cpp
 git update-index --assume-unchanged src/nubot/world_model/rtdb/rtdb_api.cpp
 git update-index --assume-unchanged src/nubot/world_model/rtdb/parser/CMakeLists.txt
+git update-index --assume-unchanged src/nubot/nubot_coach/CMakeLists.txt

@@ -40,15 +40,27 @@ void Robot2coach::update_info(const nubot_common::WorldModelInfo & _world_msg)
         robot2coach_info.RobotInfo_[i].setDribbleState(_world_msg.robotinfo[i].isdribble);
         robot2coach_info.RobotInfo_[i].setRolePreserveTime(_world_msg.robotinfo[i].role_time);
         robot2coach_info.RobotInfo_[i].setCurrentRole(_world_msg.robotinfo[i].current_role);
+        #ifndef SIMULATION
         robot2coach_info.RobotInfo_[i].setCurrentAction(_world_msg.robotinfo[i].current_action);
+        #endif
         robot2coach_info.RobotInfo_[i].setTarget(DPoint(_world_msg.robotinfo[i].target.x,_world_msg.robotinfo[i].target.y));
     }
-
+#ifdef SIMULATION
+    //更新单个机器人障碍物信息
+    if(robot2coach_info.Obstacles_[1].size() != 0 && _world_msg.obstacleinfo.pos.size()!=0)
+    {
+        for(int j=0;j<MAX_OBSNUMBER_CONST;j++)
+            robot2coach_info.Obstacles_[1][j]=DPoint( _world_msg.obstacleinfo.pos[j].x, _world_msg.obstacleinfo.pos[j].y);
+    }
+    else
+            ROS_INFO("no obstables!");
+#else
     //更新单个机器人障碍物信息
     for(int i = 0 ; i < OUR_TEAM ; i++)
         if(robot2coach_info.RobotInfo_[i].isValid())
             for(int j=0;j<MAX_OBSNUMBER_CONST;j++)
                 robot2coach_info.Obstacles_[i][j]=DPoint( _world_msg.obstacleinfo[i].pos[j].x, _world_msg.obstacleinfo[i].pos[j].y);
+#endif
 
     //更新融合后障碍物信息
     robot2coach_info.Opponents_.clear();
