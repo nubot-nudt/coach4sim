@@ -2,8 +2,8 @@
 1.请将coach_ws文件夹放到home目录下；   
 2.作为coach其环境变量中的AGENT=0,需要修改brashrc,重启生效,或者每次在终端中输入export AGENT=0;UPATE：现在将AGENT环境变量的设置放在了roslaunch文件中，所以现在不需要手动设置AGENT了。   
 3.新电脑第一次用裁判盒时，需要修改一个权限：   
-﻿sudo gedit /etc/security/limits.conf
-  *               -       rtprio          100
+﻿sudo gedit /etc/security/limits.conf   
+  *               -       rtprio          100   
 4.结束整个coach时，需要关闭ui和ctrl+c；   
 5.要修改RTBD的comm中的argv[1]参数，无线就是wlan0，有线就是eth0，当然如果插外置网卡再改；   
 6.当连接裁判盒时，所有按钮（空格可以STOP）都disabled；   
@@ -23,7 +23,7 @@
 ` $ sudo ln -s /usr/include/eigen3/Eigen /usr/include/Eigen   `   
 **Solution 2**: 把worldmodel的CMakeList中的两处Eigen3改成Eigen（因为最新的ros没有Eigen）；   
 2. if you only changed the configuration parts of some files mention above and git should not record these changes, then you should run 'configure' file like this:   
-` $ sudo chmod +x configure`
+` $ sudo chmod +x configure`   
 ` $ ./configure `   
    
    
