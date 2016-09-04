@@ -1,4 +1,35 @@
-#Note:
+**Note:**
+If you want to use coach4sim, you need to install Qt. For those who don't want to install Qt, a solution is using command line to send game commands as follows:    
+In another terminal, input the following to send a game command:   
+```    
+rostopic pub -r 1 /nubot/receive_from_coach  nubot_common/CoachInfo "
+MatchMode: 10
+MatchType: 0" 
+```   
+  Indeed, when you input until nubot_common/CoachInfo, you could press 'Tab' twice and then the whole definition of the message would show up. Then you could fill up the message. However, you only need to fill in two fields: 'MatchMode' and 'MatchType', where 'MatchMode' is the current game command, 'MatchType' is the previous game command. The coding of the game commands is in core.hpp. For quick reference:   
+```   
+enum MatchMode {
+                  STOPROBOT  =  0,
+                  OUR_KICKOFF = 1,
+                  OPP_KICKOFF = 2,
+                  OUR_THROWIN = 3,
+                  OPP_THROWIN = 4,
+                  OUR_PENALTY = 5,
+                  OPP_PENALTY = 6,
+                  OUR_GOALKICK = 7 ,
+                  OPP_GOALKICK = 8,
+                  OUR_CORNERKICK = 9,
+                  OPP_CORNERKICK = 10,
+                  OUR_FREEKICK = 11,
+                  OPP_FREEKICK = 12,
+                  DROPBALL     = 13,
+                  STARTROBOT   = 15,
+                  PARKINGROBOT = 25,
+                  TEST = 27
+                };
+```   
+
+# Configuration:
 1.请将coach_ws文件夹放到home目录下；   
 2.作为coach其环境变量中的AGENT=0,需要修改brashrc,重启生效,或者每次在终端中输入export AGENT=0;UPATE：现在将AGENT环境变量的设置放在了roslaunch文件中，所以现在不需要手动设置AGENT了。   
 3.新电脑第一次用裁判盒时，需要修改一个权限：   
