@@ -1,3 +1,12 @@
+# Package Summary   
+
+- Maintainer status: maintained
+- Maintainer: [NuBot Team](https://www.trustie.net/organizations/23?org_subfield_id=108)
+- Author: [NuBot Team](https://www.trustie.net/organizations/23?org_subfield_id=108)
+- License: Apache
+- Bug / feature tracker: https://github.com/nubot-nudt/coach4sim/issues
+- Source: git https://github.com/nubot-nudt/coach4sim (branch: master)
+   
 **Note:**
 If you want to use coach4sim, you need to install Qt. For those who don't want to install Qt, a solution is using command line to send game commands as follows:    
 In another terminal, input the following to send a game command:   
