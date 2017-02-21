@@ -6,7 +6,7 @@
 - License: Apache
 - Bug / feature tracker: https://github.com/nubot-nudt/coach4sim/issues
 - Source: git https://github.com/nubot-nudt/coach4sim (branch: master)
-   
+
 **Note:**
 If you want to use coach4sim, you need to install Qt. For those who don't want to install Qt, a solution is using command line to send game commands as follows:    
 In another terminal, input the following to send a game command:   
@@ -14,7 +14,7 @@ In another terminal, input the following to send a game command:
 rostopic pub -r 1 /nubot/receive_from_coach  nubot_common/CoachInfo "
 MatchMode: 10
 MatchType: 0" 
-```   
+```
   Indeed, when you input until nubot_common/CoachInfo, you could press 'Tab' twice and then the whole definition of the message would show up. Then you could fill up the message. However, you only need to fill in two fields: 'MatchMode' and 'MatchType', where 'MatchMode' is the current game command, 'MatchType' is the previous game command. The coding of the game commands is in core.hpp. For quick reference:   
 ```   
 enum MatchMode {
@@ -36,7 +36,7 @@ enum MatchMode {
                   PARKINGROBOT = 25,
                   TEST = 27
                 };
-```   
+```
 
 # Configuration:
 1.请将coach_ws文件夹放到home目录下；   
@@ -54,21 +54,21 @@ enum MatchMode {
 
 # RUN
 1. run coach for real robots   
-` $ roslaunch nubot_coach nubot_coach.launch` 
+   ` $ roslaunch nubot_coach nubot_coach.launch` 
 2. run coach for simulation   
-	(1) coach for cyan: 	` $ roslaunch nubot_coach nubot_coach_cyan.launch `   
-	(2) coach for magenta: 	` $ roslaunch nubot_coach nubot_coach_magenta.launch `   
+   (1) coach for cyan: 	` $ roslaunch nubot_coach cyan_sim.launch `   
+   (2) coach for magenta: 	` $ roslaunch nubot_coach magenta_sim.launch `   
 
 # Build Error Fix:
 1. When catkin_make, if it shows "fatal error: Eigen/Eigen: No such file or directory"   
-**Solution 1**: look at /usr/include/eigen3/Eigen, if this folder exists, it means you have already installed Eigen; Input this command:    
-` $ sudo ln -s /usr/include/eigen3/Eigen /usr/include/Eigen   `   
-**Solution 2**: 把worldmodel的CMakeList中的两处Eigen3改成Eigen（因为最新的ros没有Eigen）；   
+   **Solution 1**: look at /usr/include/eigen3/Eigen, if this folder exists, it means you have already installed Eigen; Input this command:    
+   ` $ sudo ln -s /usr/include/eigen3/Eigen /usr/include/Eigen   `   
+   **Solution 2**: 把worldmodel的CMakeList中的两处Eigen3改成Eigen（因为最新的ros没有Eigen）；   
 2. if you only changed the configuration parts of some files mention above and git should not record these changes, then you should run 'configure' file like this:   
-` $ sudo chmod +x configure`   
-` $ ./configure `   
-   
-   
+   ` $ sudo chmod +x configure`   
+   ` $ ./configure `   
+
+   ​
 **(You could ignore the following part!)**
 > **NOTE:** if used with RTDB, then you should change absolute path in rtdb files:
 
